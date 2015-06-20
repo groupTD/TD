@@ -47,26 +47,33 @@ function inherit(subclass,base){
 }
 
 
-function Entity(game,x,y){
+function Entity(game,texture,x,y){
+    this.game = game;
+    this.x = x;
+    this.y = y;
+    this.texture = new Texture(texture);
+}
+
+function Texture(texture){
+    this.bitmap =new createjs.Bitmap(texture);
+    this.bitmap.x = 123;
+    this.bitmap.y = 321;
+    this.width = this.bitmap.image.width;
+    this.height = this.bitmap.image.height;
+}
+
+function Enemy(game,texture,x,y){
+    Entity.call(this,game,texture,x,y);
+
+}
+inherit(Enemy, Entity); // Subclass
+
+function Tile(game,x,y){
     this.game = game;
     this.x = x;
     this.y = y;
 }
 
-
-function Enemy(game,x,y){
-    Entity.call(this,game,x,y);
-    this.bitmap = new createjs.Bitmap("assets/enemy.png");
-    this.bitmap.x=x;
-    this.bitmap.y=y;
-}
-inherit(Enemy, Entity); // Subclass
-
-function Tile(game,x,y){
-    Entity.call(this,game,x,y);
-    this.entity = null;
-}
-inherit(Tile,Entity);
 
 function Grid(game){
 
@@ -82,13 +89,16 @@ function Grid(game){
     }
 }
 
-function Game(width, height){
+function Game(width, height,enemiesCount){
 	this.width = width;
 	this.height = height;
 	this.rng = new Xor128(); // Create Random Number Generator
 	this.towers = [];
 	this.bullets = [];
-	this.enemies = new Enemy(this,120,333);
+	this.enemies = [];
+    for(var i=0; i<enemiesCount;i++){
+        this.enemies[i] = new Enemy(this,"assets/enemy.png",120+120*i,333+150*i);
+    }
 	this.pause = false;
 	this.moving = false; ///< Moving something (temporary pause)
 	this.mouseX = 0;
@@ -133,7 +143,7 @@ Game.prototype.getStageProgress = function(){
 Game.prototype.update = function(dt, autoSaveHandler){
 	if(this.pause || this.moving)
 		return;
-    this.grid
+
 }
 
 Game.prototype.serialize = function(){

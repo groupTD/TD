@@ -119,7 +119,7 @@ function init() {
 
 function start() {
     writeToTextArea("Starting START");
-    game = new Game(width, height);
+    game = new Game(width, height,3);
 
 
     stage.addChild(backImage);
@@ -141,13 +141,13 @@ function start() {
 
     drawGrid();
 
-    function drawCircle(x,y){
-        var circle = new createjs.Shape();
-        circle.graphics.setStrokeStyle(1).beginStroke("rgba(255,0,0,1)").drawCircle(x,y,2);
-        stage.addChild(circle);
-    }
-
     function drawTiles(){
+        function drawCircle(x,y){
+            var circle = new createjs.Shape();
+            circle.graphics.setStrokeStyle(1).beginStroke("rgba(255,0,0,1)").drawCircle(x,y,2);
+            stage.addChild(circle);
+        }
+
         for(var i=0;i<10;i++){
             for(var n=0;n<11;n++){
             drawCircle(game.grid.tiles[i][n].x,game.grid.tiles[i][n].y);
@@ -156,13 +156,14 @@ function start() {
     }
     drawTiles();
 
-    function drawEnemy(){
-        var enemyBitmap = new createjs.Bitmap("assets/enemy.png");
-        //var graph = new createjs.Container();
-        //game.enemies.bitmap.x = game.enemies.x;
-        //game.enemies.bitmap.y = game.enemies.y;
-        stage.addChild(game.enemies.bitmap);
-        createjs.Tween.get(game.enemies.bitmap).to({x:736,y:400}, 10000, createjs.Ease.linear);
+    function drawEnemy() {
+        for (var i = 0; i < game.enemies.length; i++) {
+
+        game.enemies[i].texture.bitmap.x = game.enemies[i].x;
+        game.enemies[i].texture.bitmap.y = game.enemies[i].y;
+        stage.addChild(game.enemies[i].texture.bitmap);
+        createjs.Tween.get(game.enemies[i].texture.bitmap).to({x: 736, y: 400}, 10000, createjs.Ease.linear);
+    }
     }
 
     drawEnemy();
@@ -178,7 +179,7 @@ function tick(event) {
         });
         if (i > 150)game = null;
     }
-    else writeToTextArea("STOPED " + i);
+    else writeToTextArea("Restart " + i);
     if (i > 200) {
         start();
         i = 0;

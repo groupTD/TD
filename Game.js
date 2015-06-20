@@ -29,24 +29,6 @@ function writeToTextArea(text) {
     }
 }
 
-/// Custom inheritance function that prevents the super class's constructor
-/// from being called on inehritance.
-/// Also assigns constructor property of the subclass properly.
-function inherit(subclass,base){
-    // If the browser or ECMAScript supports Object.create, use it
-    // (but don't remember to redirect constructor pointer to subclass)
-    if(Object.create){
-        subclass.prototype = Object.create(base.prototype);
-    }
-    else{
-        var sub = function(){};
-        sub.prototype = base.prototype;
-        subclass.prototype = new sub;
-    }
-    subclass.prototype.constructor = subclass;
-}
-
-
 function Entity(game,texture,x,y){
     this.game = game;
     this.x = x;
@@ -61,12 +43,6 @@ function Texture(texture){
     this.width = this.bitmap.image.width;
     this.height = this.bitmap.image.height;
 }
-
-function Enemy(game,texture,x,y){
-    Entity.call(this,game,texture,x,y);
-
-}
-inherit(Enemy, Entity); // Subclass
 
 function Tile(game,x,y){
     this.game = game;

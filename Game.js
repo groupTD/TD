@@ -1,4 +1,4 @@
-var consoleSize = 500;
+var consoleSize = 25;
 // Remember global object reference for deserialization.
 // The variable "window" should be the same thing in a browser,
 // but we could write this script independent of running environment.

@@ -156,6 +156,16 @@ function start() {
     }
     drawTiles();
 
+    function drawEnemy(){
+        var enemyBitmap = new createjs.Bitmap("assets/enemy.png");
+        //var graph = new createjs.Container();
+        //game.enemies.bitmap.x = game.enemies.x;
+        //game.enemies.bitmap.y = game.enemies.y;
+        stage.addChild(game.enemies.bitmap);
+        createjs.Tween.get(game.enemies.bitmap).to({x:736,y:400}, 10000, createjs.Ease.linear);
+    }
+
+    drawEnemy();
     createjs.Ticker.addEventListener("tick", tick);
 
     writeToTextArea("Ending START")

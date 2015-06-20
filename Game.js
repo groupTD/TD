@@ -28,13 +28,47 @@ function writeToTextArea(text) {
 
     }
 }
-function Tile(x,y){
-    this.x = x;
-    this.y = y;
-    this.entity = null;
+
+/// Custom inheritance function that prevents the super class's constructor
+/// from being called on inehritance.
+/// Also assigns constructor property of the subclass properly.
+function inherit(subclass,base){
+    // If the browser or ECMAScript supports Object.create, use it
+    // (but don't remember to redirect constructor pointer to subclass)
+    if(Object.create){
+        subclass.prototype = Object.create(base.prototype);
+    }
+    else{
+        var sub = function(){};
+        sub.prototype = base.prototype;
+        subclass.prototype = new sub;
+    }
+    subclass.prototype.constructor = subclass;
 }
 
-function Grid(){
+
+function Entity(game,x,y){
+    this.game = game;
+    this.x = x;
+    this.y = y;
+}
+
+
+function Enemy(game,x,y){
+    Entity.call(this,game,x,y);
+    this.bitmap = new createjs.Bitmap("assets/enemy.png");
+    this.bitmap.x=x;
+    this.bitmap.y=y;
+}
+inherit(Enemy, Entity); // Subclass
+
+function Tile(game,x,y){
+    Entity.call(this,game,x,y);
+    this.entity = null;
+}
+inherit(Tile,Entity);
+
+function Grid(game){
 
     this.tiles =new Array(10);
     for(var i=0;i<10;i++){
@@ -42,7 +76,7 @@ function Grid(){
     }
     for(var i=0,x=96;i<10;i++,x+=64){
         for(var n=0,y=48;n<11;n++,y+=64){
-            this.tiles[i][n]=new Tile(x,y);
+            this.tiles[i][n]=new Tile(game,x,y);
             //writeToTextArea(i+" "+n+" "+this.tiles[i][n].x+"  "+this.tiles[i][n].y);
         }
     }
@@ -54,7 +88,7 @@ function Game(width, height){
 	this.rng = new Xor128(); // Create Random Number Generator
 	this.towers = [];
 	this.bullets = [];
-	this.enemies = [];
+	this.enemies = new Enemy(this,120,333);
 	this.pause = false;
 	this.moving = false; ///< Moving something (temporary pause)
 	this.mouseX = 0;
@@ -65,7 +99,7 @@ function Game(width, height){
 	this.stage = null;
 	this.stageClear = true;
 	this.highScores = [];
-    this.grid = new Grid();
+    this.grid = new Grid(this);
 
 	/// A flag to defer initialization of game state to enale calling logic to
 	/// set event handlers on object creation in deserialization.

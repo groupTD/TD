@@ -1,4 +1,4 @@
-var consoleSize = 500;
+var consoleSize = 25;
 var i = 0;
 
 var stage;

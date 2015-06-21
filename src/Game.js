@@ -29,52 +29,14 @@ function writeToTextArea(text) {
     }
 }
 
-function Entity(game,texture,x,y){
-    this.game = game;
-    this.x = x;
-    this.y = y;
-    this.texture = new Texture(texture);
-}
-
-function Texture(texture){
-    this.bitmap =new createjs.Bitmap(texture);
-    this.bitmap.x = 123;
-    this.bitmap.y = 321;
-    this.width = this.bitmap.image.width;
-    this.height = this.bitmap.image.height;
-}
-
-function Tile(game,x,y){
-    this.game = game;
-    this.x = x;
-    this.y = y;
-}
-
-
-function Grid(game){
-
-    this.tiles =new Array(10);
-    for(var i=0;i<10;i++){
-        this.tiles[i] = new Array(11);
-    }
-    for(var i=0,x=96;i<10;i++,x+=64){
-        for(var n=0,y=48;n<11;n++,y+=64){
-            this.tiles[i][n]=new Tile(game,x,y);
-            //writeToTextArea(i+" "+n+" "+this.tiles[i][n].x+"  "+this.tiles[i][n].y);
-        }
-    }
-}
-
-function Game(width, height,enemiesCount){
+function Game(width, height, stage){
+	this.currentLevel = 1;
 	this.width = width;
 	this.height = height;
 	this.rng = new Xor128(); // Create Random Number Generator
 	this.towers = [];
 	this.bullets = [];
-	this.enemies = [];
-    for(var i=0; i<enemiesCount;i++){
-        this.enemies[i] = new Enemy(this,"assets/enemy.png",120+120*i,333+150*i);
-    }
+	this.enemies = [];    
 	this.pause = false;
 	this.moving = false; ///< Moving something (temporary pause)
 	this.mouseX = 0;
@@ -82,11 +44,12 @@ function Game(width, height,enemiesCount){
 	this.score = 0;
 	this.credit = 0;
 	this.progress = 0;
-	this.stage = null;
+	this.stage = stage;
 	this.stageClear = true;
 	this.highScores = [];
-    this.grid = new Grid(this);
-
+    this.grid = new Grid(this, 10, 11);
+	this.path = new Path();
+	this.enemyCount = 0;
 	/// A flag to defer initialization of game state to enale calling logic to
 	/// set event handlers on object creation in deserialization.
 	this.initialized = false;
@@ -99,9 +62,92 @@ Game.prototype.stageTime = Game.prototype.waveTime * 10;
 Game.prototype.enemyTypes = [
 ];
 
-Game.prototype.init = function(){
+Game.prototype.init = function(level){
 	this.initialized = true;
 	this.onInit();
+	this.grid.init();
+	if (level == 1) {
+		this.path.init(this.grid, getNavLevel1(this.grid));	
+		this.enemyCount = 5;
+	}
+}
+
+Game.prototype.addEnemy = function() {
+	if (this.enemies.length < this.enemyCount) {
+		var enemy = new Enemy(this, {
+			texturePath: "assets/enemy.png",
+			speed: 1000,
+			x: 0,
+			y: 0
+		});
+		enemy.init(this.stage);
+		this.enemies.push(enemy);
+		return enemy;
+	}
+	
+	return null;
+}
+
+Game.prototype.removeEnemy = function(enemy) {
+	var enemyIndex = 0;
+	for (var i = 0; i < this.enemies.length; i++) {
+		if (this.enemies[i] === enemy) {
+			enemyIndex = i;
+			break;
+		}
+	}
+	
+	// remove element from array
+	this.enemies.splice(enemyIndex, 1);
+	
+	enemy.dispose(this.stage);
+}
+
+Game.prototype.enemyFinished = function(enemy) {
+	this.removeEnemy(enemy);
+}
+
+function getNavLevel1(grid) {
+	var pathCoords = [];
+	for (var i = 0; i < grid.tiles.length; i++) {
+		pathCoords[i] = [];
+		for (var j = 0; j < grid.tiles[i].length; j++) {
+			pathCoords[i][j] = false;
+		}
+	}
+	
+	pathCoords[0][0] = true;
+	pathCoords[0][1] = true;
+	pathCoords[0][2] = true;
+	pathCoords[0][3] = true;
+	pathCoords[0][4] = true;
+	pathCoords[0][5] = true;
+	pathCoords[0][6] = true;
+	pathCoords[0][7] = true;
+	pathCoords[0][8] = true;
+	pathCoords[0][9] = true;
+	pathCoords[0][10] = true;
+	pathCoords[1][10] = true;
+	pathCoords[2][10] = true;
+	pathCoords[3][10] = true;
+	pathCoords[4][10] = true;
+	pathCoords[5][10] = true;
+	pathCoords[6][10] = true;
+	pathCoords[7][10] = true;
+	pathCoords[8][10] = true;
+	pathCoords[9][10] = true;
+	
+	// |
+	// |
+	// |
+	// |
+	// |
+	// -------------
+	return pathCoords;
+}
+
+Game.prototype.draw = function() {
+	this.grid.draw(this.stage);
 }
 
 Game.prototype.deserialize = function(stream){

@@ -12,6 +12,7 @@ var game;
 var backImage = new createjs.Bitmap("assets/back4.png");
 var checkedImage = new createjs.Bitmap("assets/checked.png");
 var lockedImage = new createjs.Bitmap("assets/locked.png");
+var gridSettingsContainer = new GridSettings;
 
 var explosionSpriteTemplate;
 var hitSpriteTemplate;
@@ -45,16 +46,26 @@ function writeToTextArea(text) {
     }
 }
 
+function GridSettings() {
+    this.horTilesLength = 64;
+    this.verTilesLength = 64;
+    this.gridXStartCoord = 0;//96;
+    this.gridYStartCoord = 0;//48;
+    this.verTilesCount = 12;//11;
+    this.horTilesCount = 12;// 10;
+}
+
+
 function init() {
-	
+
     canvas = document.getElementById("scratch");
     width = parseInt(canvas.style.width);
     height = parseInt(canvas.style.height);
-
     stage = new createjs.Stage("scratch");
     stage.enableMouseOver();
-	game = new Game(width, height, stage);
-	game.init(1);
+    game = new Game(width, height, stage, gridSettingsContainer);
+    game.init(1);
+
     //stage.touchEnabled();
 
     var progressContainer = new createjs.Container();
@@ -75,9 +86,9 @@ function init() {
     var queue = new createjs.LoadQueue();
     queue.on("complete", function () {
         stage.removeChild(progressContainer);
-		stage.addChild(backImage);
-		draw();
-		createjs.Ticker.addEventListener("tick", tick);
+        stage.addChild(backImage);
+        draw();
+        createjs.Ticker.addEventListener("tick", tick);
     });
 
     // Tower images
@@ -89,7 +100,7 @@ function init() {
     // queue.loadFile("assets/shotgun.png");
 
     // // Enemy images
-     queue.loadFile("assets/enemy.png");
+    queue.loadFile("assets/enemy.png");
     // queue.loadFile("assets/boss.png");
     // queue.loadFile("assets/enemy3.png");
     // queue.loadFile("assets/enemy4.png");
@@ -117,33 +128,32 @@ function init() {
         stage.update();
     });
 
-    writeToTextArea("INIT OVER")
 }
 
 function draw() {
-    writeToTextArea("Starting START");
-    
-	game.draw();
-	
-    writeToTextArea("Ending START")
+
+
+    game.draw();
+
+
 }
 
 function tick(event) {
     // if (game) {
-        // //writeToTextArea("RUN " + i);
-        // game.update(frameTime, function () {
-        // });
-        // if (i > 150)game = null;
+    // //writeToTextArea("RUN " + i);
+    // game.update(frameTime, function () {
+    // });
+    // if (i > 150)game = null;
     // }
     // else writeToTextArea("Restart " + i);
     // if (i > 200) {
-        // draw();
-        // i = 0;
+    // draw();
+    // i = 0;
     // }
-	
-	if (i++ % 10 == 0) {
-		var enemy = game.addEnemy();
-	}
+    //console.log(game.tween);
+    if (i++ % 10 == 0) {
+        var enemy = game.addEnemy();
+    }
 
     stage.update();
     // i++;

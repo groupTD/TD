@@ -80,8 +80,9 @@ Game.prototype.addEnemy = function () {
             x: 0,
             y: 0
         });
-        enemy.init(this.stage);
         this.enemies.push(enemy);
+        enemy.init(this.stage);
+        //this.enemies.push(enemy);
         return enemy;
     }
 

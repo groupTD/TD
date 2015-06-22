@@ -1,6 +1,8 @@
 function Entity(game, params) {
     this.game = game;
     this.params = params;
+    this.x = params.x;
+    this.y = params.y;
 }
 
 Entity.prototype.init = function (stage) {
@@ -41,8 +43,29 @@ Entity.prototype.getTile = function (grid, xSearch, ySearch) {
             var rectangle = new Rectangle(grid.tiles[xi][yi].x, grid.tiles[xi][yi].y, grid.verTilesLength, grid.horTilesLength);
             if (rectangleContainsPoint(rectangle, point)) {
                 return grid.tiles[xi][yi];
-                console.log(grid.tiles[xi][yi].number);
             }
         }
     }
+}
+
+Entity.prototype.getShortestPath = function(grid, startPoint, endPoint){
+    var graph = new Array(grid.horTilesCount);
+
+    for (var i = 0; i <grid.horTilesCount; i++) {
+        graph[i] = new Array(grid.verTilesCount);
+    }
+
+    for(var x=0;x<grid.horTilesCount;x++){
+        for(var y=0;y<grid.verTilesCount;y++){
+            graph[x][y]=grid.tiles[x][y].blocked;
+        }
+    }
+    var startTile = this.getTile(grid,startPoint.x,startPoint.y);
+    var endTile = this.getTile(grid,endPoint.x,endPoint.y);
+    var graph2 = new Graph(graph);
+    var start = graph2.grid[startTile.arrayX][startTile.arrayY];
+    var end = graph2.grid[endTile.arrayX][endTile.arrayY];
+    var result = astar.search(graph2, start, end);
+
+    return result;
 }

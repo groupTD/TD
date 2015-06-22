@@ -66,6 +66,7 @@ function init() {
     game = new Game(width, height, stage, gridSettingsContainer);
     game.init(1);
 
+
     //stage.touchEnabled();
 
     var progressContainer = new createjs.Container();
@@ -154,6 +155,7 @@ function tick(event) {
     if (i++ % 10 == 0) {
         var enemy = game.addEnemy();
     }
+    //game.addEnemy();
 
     stage.update();
     // i++;

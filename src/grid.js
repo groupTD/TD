@@ -8,7 +8,7 @@ function Grid(gridSettingsContainer) {
 }
 
 
-function Tile(grid, x, y, tileNumber, arrayX,arrayY) {
+function Tile(grid, x, y, tileNumber, arrayX, arrayY) {
     this.grid = grid;
     this.x = x;
     this.y = y;
@@ -27,7 +27,7 @@ Grid.prototype.init = function () {
     var tileNumber = 1;
     for (var n = 0, y = this.gridYStartCoord; n < this.verTilesCount; n++, y += this.verTilesLength) {
         for (var i = 0, x = this.gridXStartCoord; i < this.horTilesCount; i++, x += this.horTilesLength) {
-            this.tiles[i][n] = new Tile(this, x, y, tileNumber,i,n);
+            this.tiles[i][n] = new Tile(this, x, y, tileNumber, i, n);
             tileNumber++;
         }
     }

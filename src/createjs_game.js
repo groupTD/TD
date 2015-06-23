@@ -21,31 +21,6 @@ var boughtTower = null;
 var deleteShape;
 var frameTime = 0.1;
 
-//Dev help functions
-String.prototype.lines = function () {
-    return this.split(/\r*\n/);
-}
-String.prototype.lineCount = function () {
-    return this.lines().length;
-}
-function javascript_abort() {
-    throw new Error('This is not an error. This is just to abort javascript');
-}
-
-function writeToTextArea(text) {
-    var tmp = document.getElementById("textarea").innerHTML;
-    var lineCount = tmp.lineCount();
-    var index = tmp.indexOf("\n");
-    if (lineCount > consoleSize) {
-        var result = tmp.substring(index + 1, document.getElementById("textarea").innerHTML.length);
-        document.getElementById("textarea").innerHTML = result + text + "\n";
-    }
-    else {
-        document.getElementById("textarea").innerHTML += text + "\n";
-
-    }
-}
-
 function GridSettings() {
     this.horTilesLength = 64;
     this.verTilesLength = 64;
@@ -54,7 +29,6 @@ function GridSettings() {
     this.verTilesCount = 12;//11;
     this.horTilesCount = 12;// 10;
 }
-
 
 function init() {
 
@@ -65,8 +39,6 @@ function init() {
     stage.enableMouseOver();
     game = new Game(width, height, stage, gridSettingsContainer);
     game.init(1);
-
-
     //stage.touchEnabled();
 
     var progressContainer = new createjs.Container();

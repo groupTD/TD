@@ -48,20 +48,20 @@ Entity.prototype.getTile = function (grid, xSearch, ySearch) {
     }
 }
 
-Entity.prototype.getShortestPath = function(grid, startPoint, endPoint){
+Entity.prototype.getShortestPath = function (grid, startPoint, endPoint) {
     var graph = new Array(grid.horTilesCount);
 
-    for (var i = 0; i <grid.horTilesCount; i++) {
+    for (var i = 0; i < grid.horTilesCount; i++) {
         graph[i] = new Array(grid.verTilesCount);
     }
 
-    for(var x=0;x<grid.horTilesCount;x++){
-        for(var y=0;y<grid.verTilesCount;y++){
-            graph[x][y]=grid.tiles[x][y].blocked;
+    for (var x = 0; x < grid.horTilesCount; x++) {
+        for (var y = 0; y < grid.verTilesCount; y++) {
+            graph[x][y] = grid.tiles[x][y].blocked;
         }
     }
-    var startTile = this.getTile(grid,startPoint.x,startPoint.y);
-    var endTile = this.getTile(grid,endPoint.x,endPoint.y);
+    var startTile = this.getTile(grid, startPoint.x, startPoint.y);
+    var endTile = this.getTile(grid, endPoint.x, endPoint.y);
     var graph2 = new Graph(graph);
     var start = graph2.grid[startTile.arrayX][startTile.arrayY];
     var end = graph2.grid[endTile.arrayX][endTile.arrayY];

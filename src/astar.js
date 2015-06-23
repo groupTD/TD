@@ -1,4 +1,3 @@
-
 // javascript-astar 0.4.0
 // http://github.com/bgrins/javascript-astar
 // Freely distributable under the MIT License.
@@ -6,23 +5,23 @@
 // Includes Binary Heap (with modifications) from Marijn Haverbeke.
 // http://eloquentjavascript.net/appendix2.html
 
-(function(definition) {
+(function (definition) {
     /* global module, define */
-    if(typeof module === 'object' && typeof module.exports === 'object') {
+    if (typeof module === 'object' && typeof module.exports === 'object') {
         module.exports = definition();
-    } else if(typeof define === 'function' && define.amd) {
+    } else if (typeof define === 'function' && define.amd) {
         define([], definition);
     } else {
         var exports = definition();
         window.astar = exports.astar;
         window.Graph = exports.Graph;
     }
-})(function() {
+})(function () {
 
-    function pathTo(node){
+    function pathTo(node) {
         var curr = node,
             path = [];
-        while(curr.parent) {
+        while (curr.parent) {
             path.push(curr);
             curr = curr.parent;
         }
@@ -30,7 +29,7 @@
     }
 
     function getHeap() {
-        return new BinaryHeap(function(node) {
+        return new BinaryHeap(function (node) {
             return node.f;
         });
     }
@@ -47,7 +46,7 @@
          * @param {Function} [options.heuristic] Heuristic function (see
          *          astar.heuristics).
          */
-        search: function(graph, start, end, options) {
+        search: function (graph, start, end, options) {
             graph.cleanDirty();
             options = options || {};
             var heuristic = options.heuristic || astar.heuristics.manhattan,
@@ -60,13 +59,13 @@
 
             openHeap.push(start);
 
-            while(openHeap.size() > 0) {
+            while (openHeap.size() > 0) {
 
                 // Grab the lowest f(x) to process next.  Heap keeps this sorted for us.
                 var currentNode = openHeap.pop();
 
                 // End case -- result has been found, return the traced path.
-                if(currentNode === end) {
+                if (currentNode === end) {
                     return pathTo(currentNode);
                 }
 
@@ -127,12 +126,12 @@
         },
         // See list of heuristics: http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
         heuristics: {
-            manhattan: function(pos0, pos1) {
+            manhattan: function (pos0, pos1) {
                 var d1 = Math.abs(pos1.x - pos0.x);
                 var d2 = Math.abs(pos1.y - pos0.y);
                 return d1 + d2;
             },
-            diagonal: function(pos0, pos1) {
+            diagonal: function (pos0, pos1) {
                 var D = 1;
                 var D2 = Math.sqrt(2);
                 var d1 = Math.abs(pos1.x - pos0.x);
@@ -140,7 +139,7 @@
                 return (D * (d1 + d2)) + ((D2 - (2 * D)) * Math.min(d1, d2));
             }
         },
-        cleanNode:function(node){
+        cleanNode: function (node) {
             node.f = 0;
             node.g = 0;
             node.h = 0;
@@ -173,76 +172,76 @@
         this.init();
     }
 
-    Graph.prototype.init = function() {
+    Graph.prototype.init = function () {
         this.dirtyNodes = [];
         for (var i = 0; i < this.nodes.length; i++) {
             astar.cleanNode(this.nodes[i]);
         }
     };
 
-    Graph.prototype.cleanDirty = function() {
+    Graph.prototype.cleanDirty = function () {
         for (var i = 0; i < this.dirtyNodes.length; i++) {
             astar.cleanNode(this.dirtyNodes[i]);
         }
         this.dirtyNodes = [];
     };
 
-    Graph.prototype.markDirty = function(node) {
+    Graph.prototype.markDirty = function (node) {
         this.dirtyNodes.push(node);
     };
 
-    Graph.prototype.neighbors = function(node) {
+    Graph.prototype.neighbors = function (node) {
         var ret = [],
             x = node.x,
             y = node.y,
             grid = this.grid;
 
         // West
-        if(grid[x-1] && grid[x-1][y]) {
-            ret.push(grid[x-1][y]);
+        if (grid[x - 1] && grid[x - 1][y]) {
+            ret.push(grid[x - 1][y]);
         }
 
         // East
-        if(grid[x+1] && grid[x+1][y]) {
-            ret.push(grid[x+1][y]);
+        if (grid[x + 1] && grid[x + 1][y]) {
+            ret.push(grid[x + 1][y]);
         }
 
         // South
-        if(grid[x] && grid[x][y-1]) {
-            ret.push(grid[x][y-1]);
+        if (grid[x] && grid[x][y - 1]) {
+            ret.push(grid[x][y - 1]);
         }
 
         // North
-        if(grid[x] && grid[x][y+1]) {
-            ret.push(grid[x][y+1]);
+        if (grid[x] && grid[x][y + 1]) {
+            ret.push(grid[x][y + 1]);
         }
 
         if (this.diagonal) {
             // Southwest
-            if(grid[x-1] && grid[x-1][y-1]) {
-                ret.push(grid[x-1][y-1]);
+            if (grid[x - 1] && grid[x - 1][y - 1]) {
+                ret.push(grid[x - 1][y - 1]);
             }
 
             // Southeast
-            if(grid[x+1] && grid[x+1][y-1]) {
-                ret.push(grid[x+1][y-1]);
+            if (grid[x + 1] && grid[x + 1][y - 1]) {
+                ret.push(grid[x + 1][y - 1]);
             }
 
             // Northwest
-            if(grid[x-1] && grid[x-1][y+1]) {
-                ret.push(grid[x-1][y+1]);
+            if (grid[x - 1] && grid[x - 1][y + 1]) {
+                ret.push(grid[x - 1][y + 1]);
             }
 
             // Northeast
-            if(grid[x+1] && grid[x+1][y+1]) {
-                ret.push(grid[x+1][y+1]);
+            if (grid[x + 1] && grid[x + 1][y + 1]) {
+                ret.push(grid[x + 1][y + 1]);
             }
         }
 
         return ret;
     };
 
-    Graph.prototype.toString = function() {
+    Graph.prototype.toString = function () {
         var graphString = [],
             nodes = this.grid, // when using grid
             rowDebug, row, y, l;
@@ -263,11 +262,11 @@
         this.weight = weight;
     }
 
-    GridNode.prototype.toString = function() {
+    GridNode.prototype.toString = function () {
         return "[" + this.x + " " + this.y + "]";
     };
 
-    GridNode.prototype.getCost = function(fromNeighbor) {
+    GridNode.prototype.getCost = function (fromNeighbor) {
         // Take diagonal weight into consideration.
         if (fromNeighbor && fromNeighbor.x != this.x && fromNeighbor.y != this.y) {
             return this.weight * 1.41421;
@@ -275,24 +274,24 @@
         return this.weight;
     };
 
-    GridNode.prototype.isWall = function() {
+    GridNode.prototype.isWall = function () {
         return this.weight === 0;
     };
 
-    function BinaryHeap(scoreFunction){
+    function BinaryHeap(scoreFunction) {
         this.content = [];
         this.scoreFunction = scoreFunction;
     }
 
     BinaryHeap.prototype = {
-        push: function(element) {
+        push: function (element) {
             // Add the new element to the end of the array.
             this.content.push(element);
 
             // Allow it to sink down.
             this.sinkDown(this.content.length - 1);
         },
-        pop: function() {
+        pop: function () {
             // Store the first element so we can return it later.
             var result = this.content[0];
             // Get the element at the end of the array.
@@ -305,7 +304,7 @@
             }
             return result;
         },
-        remove: function(node) {
+        remove: function (node) {
             var i = this.content.indexOf(node);
 
             // When it is found, the process seen in 'pop' is repeated
@@ -323,13 +322,13 @@
                 }
             }
         },
-        size: function() {
+        size: function () {
             return this.content.length;
         },
-        rescoreElement: function(node) {
+        rescoreElement: function (node) {
             this.sinkDown(this.content.indexOf(node));
         },
-        sinkDown: function(n) {
+        sinkDown: function (n) {
             // Fetch the element that has to be sunk.
             var element = this.content[n];
 
@@ -352,13 +351,13 @@
                 }
             }
         },
-        bubbleUp: function(n) {
+        bubbleUp: function (n) {
             // Look up the target element and its score.
             var length = this.content.length,
                 element = this.content[n],
                 elemScore = this.scoreFunction(element);
 
-            while(true) {
+            while (true) {
                 // Compute the indices of the child elements.
                 var child2N = (n + 1) << 1,
                     child1N = child2N - 1;
@@ -372,7 +371,7 @@
                     child1Score = this.scoreFunction(child1);
 
                     // If the score is less than our element's, we need to swap.
-                    if (child1Score < elemScore){
+                    if (child1Score < elemScore) {
                         swap = child1N;
                     }
                 }

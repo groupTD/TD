@@ -56,7 +56,7 @@ Enemy.prototype.initMovement = function() {
     tweenObj.call(function () {
         that.game.enemyFinished(that);
     })
-}
+} 
 
 Enemy.prototype.resumeMovement = function() {
     for(var i=0;i<this.tween.length;i++)

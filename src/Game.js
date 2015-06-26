@@ -142,7 +142,7 @@ Game.prototype.pause = function() {
 Game.prototype.resume = function() {
 	this.paused = false;
 	for (var i = 0; i < this.enemies.length; i++) {
-		this.enemies[i].initMovement();
+		this.enemies[i].resumeMovement();
 	}
 }
 

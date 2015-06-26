@@ -22,7 +22,15 @@ Enemy.prototype.init = function (stage) {
 }
 
 Enemy.prototype.pauseMovement = function() {
-	createjs.Tween.removeTweens(this.bitmap);
+	for(var i=0;i<this.tween.length;i++)
+        this.tween[i].setPaused(true);
+	//createjs.Tween.removeTweens(this.bitmap);
+}
+
+Enemy.prototype.resumeMovement = function() {
+    for(var i=0;i<this.tween.length;i++)
+        this.tween[i].setPaused(false);
+    //createjs.Tween.removeTweens(this.bitmap);
 }
 
 Enemy.prototype.initMovement = function() {

@@ -22,14 +22,14 @@ Enemy.prototype.init = function (stage) {
 }
 
 Enemy.prototype.pauseMovement = function() {
+
     for(var i=0; i<this.tween.length;i++){
         this.tween[i].setPaused(true);
     }
     //createjs.Tween.removeTweens(this.bitmap);
 }
-
 Enemy.prototype.initMovement = function() {
-	var path = Entity.prototype.getShortestPath(game.grid, {x: this.x, y: this.y}, {x: 767, y: 767});
+    var path = Entity.prototype.getShortestPath(game.grid, {x: this.x, y: this.y}, {x: 767, y: 767});
     var enemy = this;
     this.path = path;
     // move to level logic
@@ -59,9 +59,9 @@ Enemy.prototype.initMovement = function() {
 }
 
 Enemy.prototype.resumeMovement = function() {
-    for(var i=0; i<this.tween.length;i++){
+    for(var i=0;i<this.tween.length;i++)
         this.tween[i].setPaused(false);
-    } //this.tween.setPaused(false);
+    //createjs.Tween.removeTweens(this.bitmap);
 }
 
 Enemy.prototype.dispose = function (stage) {

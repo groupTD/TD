@@ -3,6 +3,7 @@
 // but we could write this script independent of running environment.
 var global = this;
 
+<<<<<<< HEAD
 function Game(width, height, stage, gridSettingsContainer) {
     this.currentLevel = 1;
     this.width = width;
@@ -92,10 +93,40 @@ Game.prototype.removeTower = function (tower) {
             break;
         }
     }
+=======
+
+function Game(width, height, stage, gridSettingsContainer) {
+    this.currentLevel = 1;
+    this.width = width;
+    this.height = height;
+    this.rng = new Xor128(); // Create Random Number Generator
+    this.towers = [];
+    this.bullets = [];
+    this.enemies = [];
+    this.paused = false;
+    this.moving = false; ///< Moving something (temporary pause)
+    this.mouseX = 0;
+    this.mouseY = 0;
+    this.score = 0;
+    this.credit = 0;
+    this.progress = 0;
+    this.stage = stage;
+    this.stageClear = true;
+    this.highScores = [];
+    this.grid = new Grid(gridSettingsContainer);
+    this.path = new Path();
+    this.enemyCount = 0;
+    this.tween = [];
+    /// A flag to defer initialization of game state to enale calling logic to
+    /// set event handlers on object creation in deserialization.
+    this.initialized = false;
+}
+>>>>>>> ecdee66f5f1c607b79de729350359b9795090fd0
 
     // remove element from array
     this.enemies.splice(towerIndex, 1);
 
+<<<<<<< HEAD
     tower.dispose(this.stage);
 };
 
@@ -117,6 +148,61 @@ Game.prototype.removeEnemy = function (enemy) {
 Game.prototype.enemyFinished = function (enemy) {
     this.removeEnemy(enemy);
 };
+=======
+Game.prototype.enemyTypes = [];
+
+Game.prototype.init = function (level) {
+    this.initialized = true;
+    this.onInit();
+    this.grid.init();
+    if (level == 1) {
+        this.path.init(this.grid, getNavLevel1(this.grid));
+        this.enemyCount = 5;
+    }
+}
+
+Game.prototype.dispose = function () {
+	for (var i = 0; i < this.enemies.length; i++) {
+		this.removeEnemy(this.enemies[i]);
+	}
+}
+
+Game.prototype.addEnemy = function () {
+    if (this.enemies.length < this.enemyCount) {
+        var enemy = new Enemy(this, {
+            texturePath: "assets/enemy.png",
+            speed: 1000,
+            x: 0,
+            y: 0
+        });
+        this.enemies.push(enemy);
+        enemy.init(this.stage);
+        //this.enemies.push(enemy);
+        return enemy;
+    }
+
+    return null;
+}
+
+Game.prototype.removeEnemy = function (enemy) {
+    var enemyIndex = 0;
+    for (var i = 0; i < this.enemies.length; i++) {
+        if (this.enemies[i] === enemy) {
+            enemyIndex = i;
+            break;
+        }
+    }
+
+    // remove element from array
+    this.enemies.splice(enemyIndex, 1);
+
+    enemy.dispose(this.stage);
+}
+
+Game.prototype.enemyFinished = function (enemy) {
+    this.removeEnemy(enemy);
+}
+>>>>>>> ecdee66f5f1c607b79de729350359b9795090fd0
 
 function getNavLevel1(grid) {
     var pathCoords = [];
@@ -159,6 +245,7 @@ function getNavLevel1(grid) {
 
 Game.prototype.draw = function () {
     this.grid.draw(this.stage);
+<<<<<<< HEAD
 };
 
 Game.prototype.pause = function() {
@@ -173,6 +260,22 @@ Game.prototype.resume = function() {
     for (var i = 0; i < this.enemies.length; i++) {
         this.enemies[i].resumeMovement();
     }
+=======
+}
+
+Game.prototype.pause = function() {
+	this.paused = true;
+	for (var i = 0; i < this.enemies.length; i++) {
+		this.enemies[i].pauseMovement();
+	}
+}
+
+Game.prototype.resume = function() {
+	this.paused = false;
+	for (var i = 0; i < this.enemies.length; i++) {
+		this.enemies[i].resumeMovement();
+	}
+>>>>>>> ecdee66f5f1c607b79de729350359b9795090fd0
 }
 
 Game.prototype.deserialize = function (stream) {
@@ -190,15 +293,29 @@ Game.prototype.getStageProgress = function () {
 Game.prototype.update = function (dt, autoSaveHandler) {
     if (this.pause || this.moving)
         return;
+<<<<<<< HEAD
 };
+=======
+>>>>>>> ecdee66f5f1c607b79de729350359b9795090fd0
 
 Game.prototype.serialize = function () {
 
+<<<<<<< HEAD
 };
 
 Game.prototype.addBullet = function (b) {
 
 };
+=======
+Game.prototype.serialize = function () {
+}
+
+Game.prototype.removeTower = function (tower) {
+}
+
+Game.prototype.addBullet = function (b) {
+}
+>>>>>>> ecdee66f5f1c607b79de729350359b9795090fd0
 
 Game.prototype.isGameOver = function () {
 
@@ -221,6 +338,7 @@ Game.prototype.mouseMove = function (e) {
 };
 
 Game.prototype.addTowerEvent = function (t) {
+<<<<<<< HEAD
 
 };
 
@@ -247,3 +365,24 @@ Game.prototype.onStageClear = function () {
 Game.prototype.onBeamHit = function (x, y) {
 
 };
+=======
+}
+
+Game.prototype.addEnemyEvent = function (e) {
+}
+
+Game.prototype.addBulletEvent = function (b) {
+}
+
+Game.prototype.onHeal = function (target, healer) {
+}
+
+Game.prototype.onInit = function () {
+}
+
+Game.prototype.onStageClear = function () {
+}
+
+Game.prototype.onBeamHit = function (x, y) {
+}
+>>>>>>> ecdee66f5f1c607b79de729350359b9795090fd0

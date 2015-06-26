@@ -85,7 +85,6 @@ function keyBoardHandler(event) {
 		initMenu();
 	}
 }
-<<<<<<< HEAD
 
 function getPauseMenu() {
 	if (pauseMenu == null) {
@@ -116,35 +115,6 @@ function tick(event) {
 	}    
 }
 
-=======
-
-function getPauseMenu() {
-	if (pauseMenu == null) {
-		pauseMenu = new createjs.Container();
-		var popupGraphics = new createjs.Graphics();
-		popupGraphics.beginFill('black').drawRect(width / 2 - 150, height / 2 - 150, 300, 300);
-		var popupShape = new createjs.Shape(popupGraphics);
-		pauseMenu.addChild(popupShape);
-		
-		var pauseText = createText("Game paused");
-		pauseText.x = width / 2 - 130;
-		pauseText.y = height / 2 - 30;
-		pauseMenu.addChild(pauseText);
-	}
-	
-	return pauseMenu;
-}
-
-function tick(event) {
-	if (!game.paused) {
-		if (i++ % 10 == 0) {
-			var enemy = game.addEnemy();
-		}
-		stage.update();	
-	}    
-}
-
->>>>>>> ecdee66f5f1c607b79de729350359b9795090fd0
 function createText(text) {
 	var textObj = new createjs.Text(text, "40px Arial", "#ff7700");
 	var hit = new createjs.Shape();

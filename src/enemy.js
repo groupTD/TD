@@ -18,7 +18,15 @@ Enemy.prototype.init = function (stage) {
     // call base method
     Entity.prototype.init.call(this, stage);
     //Get Shortest Path
-    var path = Entity.prototype.getShortestPath(game.grid, {x: this.x, y: this.y}, {x: 767, y: 767});
+	this.initMovement();
+}
+
+Enemy.prototype.pauseMovement = function() {
+	createjs.Tween.removeTweens(this.bitmap);
+}
+
+Enemy.prototype.initMovement = function() {
+	var path = Entity.prototype.getShortestPath(game.grid, {x: this.x, y: this.y}, {x: 767, y: 767});
     var enemy = this;
     this.path = path;
     // move to level logic

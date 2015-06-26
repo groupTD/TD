@@ -12,7 +12,7 @@ function Game(width, height, stage, gridSettingsContainer) {
     this.towers = [];
     this.bullets = [];
     this.enemies = [];
-    this.pause = false;
+    this.paused = false;
     this.moving = false; ///< Moving something (temporary pause)
     this.mouseX = 0;
     this.mouseY = 0;
@@ -45,6 +45,12 @@ Game.prototype.init = function (level) {
         this.path.init(this.grid, getNavLevel1(this.grid));
         this.enemyCount = 5;
     }
+}
+
+Game.prototype.dispose = function () {
+	for (var i = 0; i < this.enemies.length; i++) {
+		this.removeEnemy(this.enemies[i]);
+	}
 }
 
 Game.prototype.addEnemy = function () {
@@ -124,6 +130,20 @@ function getNavLevel1(grid) {
 
 Game.prototype.draw = function () {
     this.grid.draw(this.stage);
+}
+
+Game.prototype.pause = function() {
+	this.paused = true;
+	for (var i = 0; i < this.enemies.length; i++) {
+		this.enemies[i].pauseMovement();
+	}
+}
+
+Game.prototype.resume = function() {
+	this.paused = false;
+	for (var i = 0; i < this.enemies.length; i++) {
+		this.enemies[i].initMovement();
+	}
 }
 
 Game.prototype.deserialize = function (stream) {

@@ -22,7 +22,10 @@ Enemy.prototype.init = function (stage) {
 }
 
 Enemy.prototype.pauseMovement = function() {
-	createjs.Tween.removeTweens(this.bitmap);
+    for(var i=0; i<this.tween.length;i++){
+        this.tween[i].setPaused(true);
+    }
+    //createjs.Tween.removeTweens(this.bitmap);
 }
 
 Enemy.prototype.initMovement = function() {
@@ -53,6 +56,12 @@ Enemy.prototype.initMovement = function() {
     tweenObj.call(function () {
         that.game.enemyFinished(that);
     })
+}
+
+Enemy.prototype.resumeMovement = function() {
+    for(var i=0; i<this.tween.length;i++){
+        this.tween[i].setPaused(false);
+    } //this.tween.setPaused(false);
 }
 
 Enemy.prototype.dispose = function (stage) {

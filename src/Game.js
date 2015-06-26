@@ -162,18 +162,18 @@ Game.prototype.draw = function () {
 };
 
 Game.prototype.pause = function() {
-	this.paused = true;
-	for (var i = 0; i < this.enemies.length; i++) {
-		this.enemies[i].pauseMovement();
-	}
-};
+    this.paused = true;
+    for (var i = 0; i < this.enemies.length; i++) {
+        this.enemies[i].pauseMovement();
+    }
+}
 
 Game.prototype.resume = function() {
-	this.paused = false;
-	for (var i = 0; i < this.enemies.length; i++) {
-		this.enemies[i].initMovement();
-	}
-};
+    this.paused = false;
+    for (var i = 0; i < this.enemies.length; i++) {
+        this.enemies[i].resumeMovement();
+    }
+}
 
 Game.prototype.deserialize = function (stream) {
 

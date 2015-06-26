@@ -9,9 +9,11 @@ var canvas;
 var width;
 var height;
 var game;
+var pauseMenu;
 var backImage = new createjs.Bitmap("assets/back4.png");
 var checkedImage = new createjs.Bitmap("assets/checked.png");
 var lockedImage = new createjs.Bitmap("assets/locked.png");
+var gridSettingsContainer = new GridSettings;
 
 var explosionSpriteTemplate;
 var hitSpriteTemplate;
@@ -20,134 +22,106 @@ var boughtTower = null;
 var deleteShape;
 var frameTime = 0.1;
 
-//Dev help functions
-String.prototype.lines = function () {
-    return this.split(/\r*\n/);
-}
-String.prototype.lineCount = function () {
-    return this.lines().length;
-}
-function javascript_abort() {
-    throw new Error('This is not an error. This is just to abort javascript');
-}
+var mainMenu = new createjs.Container();
 
-function writeToTextArea(text) {
-    var tmp = document.getElementById("textarea").innerHTML;
-    var lineCount = tmp.lineCount();
-    var index = tmp.indexOf("\n");
-    if (lineCount > consoleSize) {
-        var result = tmp.substring(index + 1, document.getElementById("textarea").innerHTML.length);
-        document.getElementById("textarea").innerHTML = result + text + "\n";
-    }
-    else {
-        document.getElementById("textarea").innerHTML += text + "\n";
-
-    }
+function GridSettings() {
+    this.horTilesLength = 64;
+    this.verTilesLength = 64;
+    this.gridXStartCoord = 0;//96;
+    this.gridYStartCoord = 0;//48;
+    this.verTilesCount = 12;//11;
+    this.horTilesCount = 12;// 10;
 }
 
 function init() {
-	
-    canvas = document.getElementById("scratch");
-    width = parseInt(canvas.style.width);
-    height = parseInt(canvas.style.height);
-
-    stage = new createjs.Stage("scratch");
+	canvas = document.getElementById("scratch");
+	stage = new createjs.Stage("scratch");
     stage.enableMouseOver();
-	game = new Game(width, height, stage);
-	game.init(1);
-    //stage.touchEnabled();
-
-    var progressContainer = new createjs.Container();
-    var progressBarBack = new createjs.Shape();
-    progressBarBack.graphics.beginFill("#f00").drawRect(0, 0, width / 2, 30);
-    progressContainer.addChild(progressBarBack);
-    var progressBar = new createjs.Shape();
-    progressBar.graphics.beginFill("#0f0").drawRect(0, 0, width / 2, 30);
-    progressBar.scaleX = 0;
-    progressContainer.addChild(progressBar);
-    var progressText = new createjs.Text("Loading...", "bold 24px Helvetica", "#ffffff");
-    progressText.y = -24;
-    progressContainer.addChild(progressText);
-    progressContainer.x = width / 4;
-    progressContainer.y = (height - 30) / 2;
-    stage.addChild(progressContainer);
-
-    var queue = new createjs.LoadQueue();
-    queue.on("complete", function () {
-        stage.removeChild(progressContainer);
-		stage.addChild(backImage);
-		draw();
-		createjs.Ticker.addEventListener("tick", tick);
-    });
-
-    // Tower images
-    // queue.loadFile("assets/healer.png");
-    // queue.loadFile("assets/turret.png");
-    // queue.loadFile("assets/shotgun.png");
-    // queue.loadFile("assets/BeamTower.png");
-    // queue.loadFile("assets/MissileTower.png");
-    // queue.loadFile("assets/shotgun.png");
-
-    // // Enemy images
-     queue.loadFile("assets/enemy.png");
-    // queue.loadFile("assets/boss.png");
-    // queue.loadFile("assets/enemy3.png");
-    // queue.loadFile("assets/enemy4.png");
-    // queue.loadFile("assets/BeamEnemy.png");
-    // queue.loadFile("assets/MissileEnemy.png");
-    // queue.loadFile("assets/BattleShip.png");
-    // queue.loadFile("assets/BattleShipTurret.png");
-    // queue.loadFile("assets/BulletShieldEnemy.png");
-
-    // // Effects
-    // queue.loadFile("assets/explode.png");
-    // queue.loadFile("assets/explode2.png");
-    // queue.loadFile("assets/explode_blue.png");
-
-    // // Miscellaneous
-    // queue.loadFile("assets/back.jpg");
-    // queue.loadFile("assets/back2.jpg");
-    // queue.loadFile("assets/Missile.png");
-    // queue.loadFile("assets/trashcan.png");
-    // queue.loadFile("assets/checked.png");
-    // queue.loadFile("assets/locked.png");
-
-    queue.on("progress", function (event) {
-        progressBar.scaleX = queue.progress;
-        stage.update();
-    });
-
-    writeToTextArea("INIT OVER")
+	width = parseInt(canvas.style.width);
+    height = parseInt(canvas.style.height);
+	initMenu();
 }
 
-function draw() {
-    writeToTextArea("Starting START");
-    
+function initMenu() {
+	var startText = createText("Start");
+	startText.x = width / 2 - 50;
+	startText.y = height / 2;
+	
+	startText.addEventListener('click', function(event) {
+		stage.removeChild(mainMenu);
+		initGame();
+	});
+	mainMenu.addChild(startText);
+	stage.addChild(backImage);
+	stage.addChild(mainMenu);
+	stage.update();
+}
+
+function initGame() {
+	game = new Game(width, height, stage, gridSettingsContainer);
+    game.init(1);
 	game.draw();
 	
-    writeToTextArea("Ending START")
+	this.document.onkeyup = keyBoardHandler;
+	createjs.Ticker.addEventListener("tick", tick);
 }
 
-function tick(event) {
-    // if (game) {
-        // //writeToTextArea("RUN " + i);
-        // game.update(frameTime, function () {
-        // });
-        // if (i > 150)game = null;
-    // }
-    // else writeToTextArea("Restart " + i);
-    // if (i > 200) {
-        // draw();
-        // i = 0;
-    // }
+function keyBoardHandler(event) {
 	
-	if (i++ % 10 == 0) {
-		var enemy = game.addEnemy();
+	// when 'p' is pressed (for pause)
+	if (event.keyCode == 80) {
+		if (!game.paused) {
+			game.pause();
+			stage.addChild(getPauseMenu());
+			stage.update();	
+		}
+		else {
+			stage.removeChild(getPauseMenu());
+			game.resume()
+		}
+	} else if (event.keyCode == 27) { // on escape
+		game.dispose();
+		stage.removeAllChildren();
+		initMenu();
 	}
+}
 
-    stage.update();
-    // i++;
+function getPauseMenu() {
+	if (pauseMenu == null) {
+		pauseMenu = new createjs.Container();
+		var popupGraphics = new createjs.Graphics();
+		popupGraphics.beginFill('black').drawRect(width / 2 - 150, height / 2 - 150, 300, 300);
+		var popupShape = new createjs.Shape(popupGraphics);
+		pauseMenu.addChild(popupShape);
+		
+		var pauseText = createText("Game paused");
+		pauseText.x = width / 2 - 130;
+		pauseText.y = height / 2 - 30;
+		pauseMenu.addChild(pauseText);
+	}
+	
+	return pauseMenu;
+}
 
+
+
+function tick(event) {
+	if (!game.paused) {
+        if (i++ % 10 == 0) {
+			var enemy = game.addEnemy();
+            var tower = game.addTower();
+		}
+		stage.update();	
+	}    
+}
+
+function createText(text) {
+	var textObj = new createjs.Text(text, "40px Arial", "#ff7700");
+	var hit = new createjs.Shape();
+	hit.graphics.beginFill("#000").drawRect(0, 0, textObj.getMeasuredWidth(), textObj.getMeasuredHeight());
+	textObj.hitArea = hit;
+	
+	return textObj;
 }
 
 

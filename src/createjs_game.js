@@ -109,12 +109,12 @@ function getPauseMenu() {
 function tick(event) {
 	if (!game.paused) {
         if (i++ % 10 == 0) {
-			var enemy = game.addEnemy();
-            var tower = game.addTower(66,(game.grid.verTilesCount*game.grid.verTilesLength)/2);
-            tower = game.addTower(100,(game.grid.verTilesCount*game.grid.verTilesLength)/2);
+            var tower = game.addTower(165,(game.grid.verTilesCount*game.grid.verTilesLength)/2);
+            tower = game.addTower(222,(game.grid.verTilesCount*game.grid.verTilesLength)/2)-64;
             tower = game.addTower(432,564);
             tower = game.addTower(454,454);
             tower = game.addTower(300,300);
+            var enemy = game.addEnemy();
 		}
 		stage.update();	
 	}    

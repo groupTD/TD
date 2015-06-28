@@ -10,6 +10,7 @@ var width;
 var height;
 var game;
 var pauseMenu;
+var rockImage = new createjs.Bitmap("assets/rock.jpg");
 var backImage = new createjs.Bitmap("assets/back4.png");
 var checkedImage = new createjs.Bitmap("assets/checked.png");
 var lockedImage = new createjs.Bitmap("assets/locked.png");
@@ -109,7 +110,11 @@ function tick(event) {
 	if (!game.paused) {
         if (i++ % 10 == 0) {
 			var enemy = game.addEnemy();
-            var tower = game.addTower();
+            var tower = game.addTower(66,(game.grid.verTilesCount*game.grid.verTilesLength)/2);
+            tower = game.addTower(100,(game.grid.verTilesCount*game.grid.verTilesLength)/2);
+            tower = game.addTower(432,564);
+            tower = game.addTower(454,454);
+            tower = game.addTower(300,300);
 		}
 		stage.update();	
 	}    

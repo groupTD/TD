@@ -29,7 +29,7 @@ Enemy.prototype.pauseMovement = function() {
 }
 
 Enemy.prototype.initMovement = function() {
-	var path = Entity.prototype.getShortestPath(game.grid, {x: this.x, y: this.y}, {x: 767, y: 767});
+	var path = Entity.prototype.getShortestPath(game.grid, {x: this.x, y: this.y}, {x: 766, y: 384});
     var enemy = this;
     this.path = path;
     // move to level logic

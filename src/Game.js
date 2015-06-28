@@ -59,7 +59,7 @@ Game.prototype.addEnemy = function () {
             texturePath: "assets/enemy.png",
             speed: 1000,
             x: 0,
-            y: 0
+            y: (game.grid.verTilesCount*game.grid.verTilesLength)/2
         });
         this.enemies.push(enemy);
         enemy.init(this.stage);
@@ -70,19 +70,24 @@ Game.prototype.addEnemy = function () {
     return null;
 };
 
-Game.prototype.addTower = function() {
-    if (this.towers.length < 1) {
-        var tile = Entity.prototype.getTile(this.grid, 300, 300);
+Game.prototype.addTower = function(x,y) {
+    if (this.towers.length < 10) {
+        var tile = Entity.prototype.getTile(this.grid, x, y);
         var tower = new Tower(this, {
             texturePath: "assets/tower.png",
             x: tile.x,
-            y: tile.x
+            y: tile.y
         });
+        this.setTileBlock(tile);
         this.towers.push(tower);
         tower.init(this.stage);
         return tower;
     }
     return null;
+};
+
+Game.prototype.setTileBlock= function (tile) {
+            this.grid.tiles[tile.arrayX][tile.arrayY].blocked=0;
 };
 
 Game.prototype.removeTower = function (tower) {

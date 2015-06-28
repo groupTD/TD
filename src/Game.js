@@ -198,7 +198,7 @@ Game.prototype.serialize = function () {
 
 };
 
-Game.prototype.addBullet = function (b) {
+Game.prototype.addProjectile = function (b) {
 
 };
 

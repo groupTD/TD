@@ -357,7 +357,7 @@ function start(){
 			var trailPos = [b.x, b.y];
 			var beginTrail = function(){
 				trail = new createjs.Shape();
-				trail.graphics.beginStroke(b.owner instanceof Tower ? "#7f3f7f" : "#7f7f7f")
+				trail.graphics.beginStroke(b.tower instanceof Tower ? "#7f3f7f" : "#7f7f7f")
 					.setStrokeStyle(2).mt(trailPos[0], trailPos[1]);
 				effectContainer.addChild(trail);
 				trailCounter = 0;

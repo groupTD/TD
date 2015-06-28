@@ -6,7 +6,6 @@ function Tower(game, params){
     this.tween = [];
     this.kills = 0;
     this.projSpeed = 0;
-
 }
 //inherit(Tower, Entity);
 
@@ -46,40 +45,40 @@ Tower.prototype.getCooldownTime = function(tower){
 };
 
 Tower.prototype.shoot = function(){
-    var spd = Tower.prototype.projSpeed;
-    var mat = [Math.cos(this.angle), Math.sin(this.angle), -Math.sin(this.angle), Math.cos(this.angle)];
+    var speed = Tower.prototype.projSpeed;
+    var math = [Math.cos(this.angle), Math.sin(this.angle), -Math.sin(this.angle), Math.cos(this.angle)];
     for(var i = -1; i <= 1; i += 2){
-        var ofs = mattvp(mat, [0, i * 5]);
-        var b = new Bullet(this.game, this.x + ofs[0], this.y + ofs[1], spd * mat[0], spd * mat[1], this.angle, this);
-        b.damage = Math.pow(1.2, this.level);
-        this.game.addBullet(b);
+        var offset = mattvp(math, [0, i * 5]);
+        var towerProj = new Projectile(this.game, this.x + offset[0], this.y + offset[1], speed * math[0], speed * math[1], this.angle, this);
+        towerProj.damage = Math.pow(1.2, this.level);
+        this.game.addProjectile(towerProj);
     }
     this.cooldown = this.getCooldownTime();
-}
+};
 
-function Bullet(game,x,y,vx,vy,angle,owner){
+function Projectile(game,x,y,vx,vy,angle,tower){
     this.game = game;
     this.x = x;
     this.y = y;
     this.vx = vx;
     this.vy = vy;
     this.angle = angle;
-    this.owner = owner;
-    this.team = owner.team;
+    this.tower = tower;
+    this.team = tower.team;
     this.damage = 1;
     this.vanished = false;
-};
+}
 
-Bullet.prototype.update = function(dt){
+Projectile.prototype.update = function(dt){
     this.x += this.vx * dt;
     this.y += this.vy * dt;
     var enemies = this.team == 0 ? this.game.enemies : this.game.towers;
     for(var i = 0; i < enemies.length; i++){
-        var e = enemies[i];
-        if((e.x - this.x) * (e.x - this.x) + (e.y - this.y) * (e.y - this.y) < e.radius * e.radius){
-            this.owner.damage += this.damage;
-            if(e.receiveDamage(this.damage)){
-                this.owner.onKill(e);
+        var enemy = enemies[i];
+        if((enemy.x - this.x) * (enemy.x - this.x) + (enemy.y - this.y) * (enemy.y - this.y) < enemy.radius * enemy.radius){
+            this.tower.damage += this.damage;
+            if(enemy.receiveDamage(this.damage)){
+                this.tower.onKill(enemy);
             }
             return 0;
         }

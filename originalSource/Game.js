@@ -482,7 +482,7 @@ function Bullet(game,x,y,vx,vy,angle,owner){
 	this.vx = vx;
 	this.vy = vy;
 	this.angle = angle;
-	this.owner = owner;
+	this.tower = owner;
 	this.team = owner.team;
 	this.damage = 1;
 	this.vanished = false;
@@ -495,9 +495,9 @@ Bullet.prototype.update = function(dt){
 	for(var i = 0; i < enemies.length; i++){
 		var e = enemies[i];
 		if((e.x - this.x) * (e.x - this.x) + (e.y - this.y) * (e.y - this.y) < e.radius * e.radius){
-			this.owner.damage += this.damage;
+			this.tower.damage += this.damage;
 			if(e.receiveDamage(this.damage)){
-				this.owner.onKill(e);
+				this.tower.onKill(e);
 			}
 			return 0;
 		}
@@ -580,7 +580,7 @@ function Bullet(game,x,y,vx,vy,angle,owner){
 	this.vx = vx;
 	this.vy = vy;
 	this.angle = angle;
-	this.owner = owner;
+	this.tower = owner;
 	this.team = owner.team;
 	this.damage = 1;
 	this.vanished = false;
@@ -613,9 +613,9 @@ Bullet.prototype.update = function(dt){
 			}
 		}
 		if((e.x - this.x) * (e.x - this.x) + (e.y - this.y) * (e.y - this.y) < e.radius * e.radius){
-			this.owner.damage += this.damage;
+			this.tower.damage += this.damage;
 			if(e.receiveDamage(this.damage)){
-				this.owner.onKill(e);
+				this.tower.onKill(e);
 			}
 			return 0;
 		}
@@ -987,7 +987,7 @@ function BattleShipEnemy(game,x,y){
 	this.shootPhase = 0;
 	function BattleShipTurret(owner, x, y){
 		Entity.apply(this, arguments);
-		this.owner = owner;
+		this.tower = owner;
 		this.x = x;
 		this.y = y;
 		this.angle = 0;
@@ -999,11 +999,11 @@ function BattleShipEnemy(game,x,y){
 	BattleShipTurret.prototype.shoot = function(dt){
 		var spd = 100.;
 		var angle = this.angle + (game.rng.next() - 0.5) * Math.PI * 0.05;
-		var baseMat = this.owner.getRot(this.owner.angle);
-		var basePos = vecadd(mattvp(baseMat, [this.x, this.y]), this.owner.getPos());
+		var baseMat = this.tower.getRot(this.tower.angle);
+		var basePos = vecadd(mattvp(baseMat, [this.x, this.y]), this.tower.getPos());
 		var mat = this.getRot(angle);
-		var jointAngle = this.owner.angle + this.angle;
-		var jointMat = this.owner.getRot(jointAngle);
+		var jointAngle = this.tower.angle + this.angle;
+		var jointMat = this.tower.getRot(jointAngle);
 		for(var i = -1; i <= 1; i += 2){
 			var pos = vecadd(mattvp(jointMat, [0, i * 6]), basePos);
 			var b = new Bullet(game, pos[0], pos[1],
@@ -1019,12 +1019,12 @@ function BattleShipEnemy(game,x,y){
 		}
 
 		if(this.target !== null && 0 < this.target.health){
-			var baseMat = this.owner.getRot(this.owner.angle);
-			var basePos = vecadd(mattvp(baseMat, [this.x, this.y]), this.owner.getPos());
+			var baseMat = this.tower.getRot(this.tower.angle);
+			var basePos = vecadd(mattvp(baseMat, [this.x, this.y]), this.tower.getPos());
 			var dv = vecsub(this.target.getPos(), basePos);
 			var dvlen = Math.sqrt(dv[0] * dv[0] + dv[1] * dv[1]);
 			if(0 < dvlen){
-				this.angle = rapproach(this.angle, Math.atan2(dv[1], dv[0]) - this.owner.angle, Math.PI * 0.1);
+				this.angle = rapproach(this.angle, Math.atan2(dv[1], dv[0]) - this.tower.angle, Math.PI * 0.1);
 			}
 		}
 		if(0 < this.cooldown)

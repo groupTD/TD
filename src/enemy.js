@@ -43,7 +43,7 @@ Enemy.prototype.initMovement = function() {
     }
 
     //Create Tween for shortest path
-    for (var j = 0; j < path.length - 1; j++) {
+    for (var j = 0; j < path.length ; j++) {
         var tw = {
             x: game.grid.tiles[path[j].x][path[j].y].x,
             y: game.grid.tiles[path[j].x][path[j].y].y

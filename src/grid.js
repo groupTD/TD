@@ -8,14 +8,15 @@ function Grid(gridSettingsContainer) {
 }
 
 
-function Tile(grid, x, y, tileNumber, arrayX, arrayY) {
+function Tile(grid, x, y, tileNumber, arrayX, arrayY,blocked) {
     this.grid = grid;
     this.x = x;
     this.y = y;
-    this.blocked = 1;
+    this.blocked = blocked;
     this.number = tileNumber;
     this.arrayX = arrayX;
     this.arrayY = arrayY;
+    this.texture;
 }
 
 Grid.prototype.init = function () {
@@ -27,7 +28,15 @@ Grid.prototype.init = function () {
     var tileNumber = 1;
     for (var n = 0, y = this.gridYStartCoord; n < this.verTilesCount; n++, y += this.verTilesLength) {
         for (var i = 0, x = this.gridXStartCoord; i < this.horTilesCount; i++, x += this.horTilesLength) {
-            this.tiles[i][n] = new Tile(this, x, y, tileNumber, i, n);
+            //Setting grid frame blocked for enemies
+            if(i==0||n==0||i==this.horTilesCount-1||n==this.verTilesCount-1){
+                if(i==0&&n==Math.floor((this.verTilesCount)/2)){
+                    this.tiles[i][n] = new Tile(this, x, y, tileNumber, i, n, 1);
+                }
+                else if(i==this.horTilesCount-1&&n==6)this.tiles[i][n] = new Tile(this, x, y, tileNumber, i, n, 1);
+                else this.tiles[i][n] = new Tile(this, x, y, tileNumber, i, n, 0);
+            }
+            else this.tiles[i][n] = new Tile(this, x, y, tileNumber, i, n, 1);
             tileNumber++;
         }
     }
@@ -61,13 +70,24 @@ Grid.prototype.draw = function (stage) {
         stage.addChild(txt);
     }
 
+    function drawGridFrame(tile,grid) {
+        var bitmap = new createjs.Bitmap("assets/Rock.jpg");
+        var i = tile.arrayX;
+        var n = tile.arrayY;
+        if(i==0||n==0||i==grid.horTilesCount-1||n==grid.verTilesCount-1) {
+            if (!((i == 0 && n == Math.floor((grid.verTilesCount) / 2))||(i == grid.horTilesCount - 1 && n == Math.floor(grid.horTilesCount/2)))) {
+                bitmap.x = tile.x;
+                bitmap.y = tile.y;
+            }
+        }
+        stage.addChild(bitmap);
+    }
 
     for (var n = 0; n < this.verTilesCount; n++) {
         for (var i = 0; i < this.horTilesCount; i++) {
             drawCircle(this.tiles[i][n]);
             writeTileNumber(this.tiles[i][n]);
+            drawGridFrame(this.tiles[i][n],this);
         }
     }
-
-
 }

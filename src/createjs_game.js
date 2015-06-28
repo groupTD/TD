@@ -61,7 +61,7 @@ function initGame() {
 	game = new Game(width, height, stage, gridSettingsContainer);
     game.init(1);
 	game.draw();
-	
+		
 	this.document.onkeyup = keyBoardHandler;
 	createjs.Ticker.addEventListener("tick", tick);
 }

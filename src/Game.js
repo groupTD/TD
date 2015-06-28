@@ -26,6 +26,9 @@ function Game(width, height, stage, gridSettingsContainer) {
     this.path = new Path();
     this.enemyCount = 0;
     this.tween = [];
+	this.currentWave = null;
+	this.difficulty = 1;
+	this.levelStatusText = null;
     /// A flag to defer initialization of game state to enale calling logic to
     /// set event handlers on object creation in deserialization.
     this.initialized = false;
@@ -48,26 +51,7 @@ Game.prototype.init = function (level) {
 };
 
 Game.prototype.dispose = function () {
-	for (var i = 0; i < this.enemies.length; i++) {
-		this.removeEnemy(this.enemies[i]);
-	}
-};
-
-Game.prototype.addEnemy = function () {
-    if (this.enemies.length < this.enemyCount) {
-        var enemy = new Enemy(this, {
-            texturePath: "assets/enemy.png",
-            speed: 1000,
-            x: 0,
-            y: 0
-        });
-        this.enemies.push(enemy);
-        enemy.init(this.stage);
-        //this.enemies.push(enemy);
-        return enemy;
-    }
-
-    return null;
+	this.currentWave.dispose();
 };
 
 Game.prototype.addTower = function() {
@@ -87,37 +71,44 @@ Game.prototype.addTower = function() {
 
 Game.prototype.removeTower = function (tower) {
     var towerIndex = 0;
-    for (var i = 0; i < this.enemies.length; i++) {
-        if (this.enemies[i] === tower) {
+    for (var i = 0; i < this.towers.length; i++) {
+        if (this.towers[i] === tower) {
             towerIndex = i;
             break;
         }
     }
 
     // remove element from array
-    this.enemies.splice(towerIndex, 1);
+    this.towers.splice(towerIndex, 1);
 
     tower.dispose(this.stage);
 };
 
-Game.prototype.removeEnemy = function (enemy) {
-    var enemyIndex = 0;
-    for (var i = 0; i < this.enemies.length; i++) {
-        if (this.enemies[i] === enemy) {
-            enemyIndex = i;
-            break;
-        }
-    }
-
-    // remove element from array
-    this.enemies.splice(enemyIndex, 1);
-
-    enemy.dispose(this.stage);
+Game.prototype.addEnemy = function (enemy) {
+    if (this.currentWave == null) {
+		this.currentWave = new Wave(this, {
+			difficulty: this.difficulty
+		});
+		
+		this.addCurrentLevelText();
+	}
+		
+	if (!this.currentWave.isFinished())
+		this.currentWave.addEnemy();
+	else {	
+		this.currentWave = null;
+		this.difficulty++;
+	}
 };
 
-Game.prototype.enemyFinished = function (enemy) {
-    this.removeEnemy(enemy);
-};
+Game.prototype.addCurrentLevelText = function () {
+	stage.removeChild(this.levelStatusText);
+	var text = "Current creep level: " + this.difficulty;
+	this.levelStatusText = new createjs.Text(text, "40px Arial", "#ff7700");
+	this.levelStatusText.x = (this.grid.horTilesLength * this.grid.horTilesCount) / 2;
+	this.levelStatusText.y = (this.grid.verTilesLength * this.grid.verTilesCount) / 2;
+	stage.addChild(this.levelStatusText);
+}
 
 function getNavLevel1(grid) {
     var pathCoords = [];
@@ -164,16 +155,12 @@ Game.prototype.draw = function () {
 
 Game.prototype.pause = function() {
     this.paused = true;
-    for (var i = 0; i < this.enemies.length; i++) {
-        this.enemies[i].pauseMovement();
-    }
+    this.currentWave.pause();
 }
 
 Game.prototype.resume = function() {
     this.paused = false;
-    for (var i = 0; i < this.enemies.length; i++) {
-        this.enemies[i].resumeMovement();
-    }
+    this.currentWave.resume();
 }
 
 Game.prototype.deserialize = function (stream) {

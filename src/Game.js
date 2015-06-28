@@ -76,8 +76,13 @@ Game.prototype.addTower = function() {
         tile.blocked = 0;
         var tower = new Tower(this, {
             texturePath: "assets/tower.png",
+<<<<<<< HEAD
             x: tile.x,
             y: tile.y
+=======
+            x: game.grid.tiles[5][5].x,
+            y: game.grid.tiles[5][5].x
+>>>>>>> a1ac0330d70c83ddf56fa551088d211a03b5299d
         });
         this.towers.push(tower);
         tower.init(this.stage);

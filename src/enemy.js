@@ -1,9 +1,9 @@
-function Enemy(game, params) {
+function Enemy(game, wave, params) {
     Entity.call(this, game, params);
     this.speed = params.speed;
     this.tween = [];
     this.path;
-
+	this.wave = wave;
     // TODO: not implemented
     this.health = params.health;
     this.damage = params.damage;
@@ -54,7 +54,7 @@ Enemy.prototype.initMovement = function() {
     // signal game that enemy is finished
     var that = this;
     tweenObj.call(function () {
-        that.game.enemyFinished(that);
+        that.wave.enemyFinished(that);
     })
 }
 

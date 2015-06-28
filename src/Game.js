@@ -72,10 +72,12 @@ Game.prototype.addEnemy = function () {
 
 Game.prototype.addTower = function() {
     if (this.towers.length < 1) {
+        var tile = Entity.prototype.getTile(this.grid, 300, 300);
+        tile.blocked = 0;
         var tower = new Tower(this, {
             texturePath: "assets/tower.png",
-            x: 100,
-            y: 100
+            x: tile.x,
+            y: tile.y
         });
         this.towers.push(tower);
         tower.init(this.stage);

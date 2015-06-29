@@ -2,6 +2,7 @@ function Enemy(game, wave, params) {
     Entity.call(this, game, params);
     this.speed = params.speed;
     this.tween = [];
+    this.newPath =false;
     this.path;
 	this.wave = wave;
     // TODO: not implemented
@@ -25,31 +26,31 @@ Enemy.prototype.pauseMovement = function() {
     for(var i=0; i<this.tween.length;i++){
         this.tween[i].setPaused(true);
     }
-    //createjs.Tween.removeTweens(this.bitmap);
 };
 
 Enemy.prototype.getPath = function(grid, coords, destination) {
-    var path = Entity.prototype.getShortestPath(grid, coords, destination);
-    //console.log(path);
-    return path;
+    return Entity.prototype.getShortestPath(grid, coords, destination);
 };
 
-Enemy.prototype.initMovement = function() {
 
+Enemy.prototype.initMovement = function() {
 	//var path = Entity.prototype.getShortestPath(game.grid, {x: this.x, y: this.y}, {x: 766, y: 384});
     var path = this.getPath(game.grid, {x: this.x, y: this.y}, {x:766, y:384});
-
     var enemy = this;
     this.path = path;
     // move to level logic
     var tweenObj = createjs.Tween.get(this.bitmap);
 
     function updateEnemyCoords() {
-        enemy.x = this.x;
-        enemy.y = this.y;
-        //Outputs Tile number on which Enemy is on
-        //console.log(Entity.prototype.getTile(game.grid,enemy.x,enemy.y).number);
-    }
+     enemy.x = this.x;
+     enemy.y = this.y;
+        if(enemy.newPath==true){
+            enemy.tween[0]._paused = true;
+            enemy.tween.splice(0,1);
+            enemy.initMovement();
+            enemy.newPath=false;
+        }
+     }
 
     //Create Tween for shortest path
     for (var j = 0; j < path.length ; j++) {

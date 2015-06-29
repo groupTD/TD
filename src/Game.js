@@ -65,25 +65,48 @@ Game.prototype.dispose = function () {
 };
 
 
+/*<<<<<<< HEAD
 Game.prototype.addTower = function(x,y) {
     var tile = Entity.prototype.getTile(this.grid, x, y);
     if (this.checkEnemiesPaths(tile) != 1) {
         if (undefined != tile) {
             if (tile.blocked != 0) {
                 if (this.gold >= 100) {
-                    var tower = new Tower(this, {
-                        texturePath: "assets/tower.png",
-                        x: tile.x,
-                        y: tile.y
-                    });
-                    this.towers.push(tower);
-                    tower.init(this.stage);
-                    this.gold = this.gold - 100;
-                    this.setTileBlock(tile);
-                    this.grid.tiles[tile.arrayX][tile.arrayY].hasTower = 1;
-                    this.grid.tiles[tile.arrayX][tile.arrayY].tower = tower;
-                    this.updateEnemiesPath();
-                    return tower;
+
+                }
+=======*/
+
+Game.prototype.addTower = function (x, y) {
+    var hardcodeNoPlacement = function (tile) {
+        if (tile.arrayX == 0 && tile.arrayY == 6 || tile.arrayX == 11 && tile.arrayY == 6)
+            return true;
+        else if (tile.arrayX == 1 && tile.arrayY == 6 || tile.arrayX == 10 && tile.arrayY == 6)
+            return true;
+        else
+            return false;
+    };
+    var tile = Entity.prototype.getTile(this.grid, x, y);
+    if (undefined != tile) {
+        if (!hardcodeNoPlacement(tile)) {
+            if (this.checkEnemiesPaths(tile) != 1) {
+                if (tile.blocked != 0) {
+                    if (this.gold > 100) {
+
+                        var tower = new Tower(this, {
+                            texturePath: "assets/tower.png",
+                            x: tile.x,
+                            y: tile.y
+                        });
+
+                        this.towers.push(tower);
+                        tower.init(this.stage);
+                        this.gold = this.gold - 100;
+                        this.setTileBlock(tile);
+                        this.grid.tiles[tile.arrayX][tile.arrayY].hasTower = 1;
+                        this.grid.tiles[tile.arrayX][tile.arrayY].tower = tower;
+                        this.updateEnemiesPath();
+                        return tower;
+                    }
                 }
             }
         }
@@ -103,12 +126,19 @@ Game.prototype.checkEnemiesPaths = function(tile) {
 };
 
 Game.prototype.updateEnemiesPath = function(){
+
     //console.log(this.currentWave.enemies);
-    if (this.currentWave) {
+    /*if (this.currentWave) {
         for (var i = 0; i < this.currentWave.enemies.length; i++) {
             var enemy = this.currentWave.enemies[i];
             enemy.path = enemy.getPath(this.grid, {x: enemy.x, y: enemy.y}, {x:766, y:384});
-            enemy.initMovement();
+            enemy.initMovement();*/
+
+    if(this.currentWave!=null){
+        if(this.currentWave.enemies!=null) {
+            this.currentWave.enemies.forEach(function (enemy) {
+                enemy.newPath=true;
+            })
         }
     }
 };
@@ -185,8 +215,6 @@ Game.prototype.addGoldText = function () {
 
 Game.prototype.draw = function () {
     this.grid.draw(this.stage);
-  /*  this.addGoldText();
-    this.addLivesText();*/
 };
 
 Game.prototype.pause = function() {
@@ -243,77 +271,6 @@ Game.prototype.getTile = function (grid, xSearch, ySearch) {
 
 };
 
-Game.prototype.getTile = function (grid, xSearch, ySearch) {
-
-    function Point(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    function Rectangle(x, y, width, height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-    }
-
-    function rectangleContainsPoint(rect, point) {
-        if (rect.width <= 0 || rect.height <= 0) {
-            return false;
-        }
-        return (point.x >= rect.x && point.x < rect.x + rect.width && point.y >= rect.y && point.y < rect.y + rect.height);
-    }
-
-    for (var xi = 0; xi < grid.horTilesCount; xi++) {
-        for (var yi = 0; yi < grid.verTilesCount; yi++) {
-            var point = new Point(xSearch, ySearch);
-            var rectangle = new Rectangle(grid.tiles[xi][yi].x, grid.tiles[xi][yi].y, grid.verTilesLength, grid.horTilesLength);
-            if (rectangleContainsPoint(rectangle, point)) {
-                return grid.tiles[xi][yi];
-            }
-        }
-    }
-
-};
-
-function getNavLevel1(grid) {
-    var pathCoords = [];
-    for (var i = 0; i < grid.tiles.length; i++) {
-        pathCoords[i] = [];
-        for (var j = 0; j < grid.tiles[i].length; j++) {
-            pathCoords[i][j] = false;
-        }
-    }
-
-    pathCoords[0][0] = true;
-    pathCoords[0][1] = true;
-    pathCoords[0][2] = true;
-    pathCoords[0][3] = true;
-    pathCoords[0][4] = true;
-    pathCoords[0][5] = true;
-    pathCoords[0][6] = true;
-    pathCoords[0][7] = true;
-    pathCoords[0][8] = true;
-    pathCoords[0][9] = true;
-    pathCoords[0][10] = true;
-    pathCoords[1][10] = true;
-    pathCoords[2][10] = true;
-    pathCoords[3][10] = true;
-    pathCoords[4][10] = true;
-    pathCoords[5][10] = true;
-    pathCoords[6][10] = true;
-    pathCoords[7][10] = true;
-    pathCoords[8][10] = true;
-    pathCoords[9][10] = true;
-
-    // |
-    // |
-    // |
-    // |
-    // |
-    // -------------
-    return pathCoords;
-}
 
 Game.prototype.addProjectile = function(pr) {
     this.projectiles.push(pr);

@@ -65,17 +65,6 @@ Game.prototype.dispose = function () {
 };
 
 
-/*<<<<<<< HEAD
-Game.prototype.addTower = function(x,y) {
-    var tile = Entity.prototype.getTile(this.grid, x, y);
-    if (this.checkEnemiesPaths(tile) != 1) {
-        if (undefined != tile) {
-            if (tile.blocked != 0) {
-                if (this.gold >= 100) {
-
-                }
-=======*/
-
 Game.prototype.addTower = function (x, y) {
     var hardcodeNoPlacement = function (tile) {
         if (tile.arrayX == 0 && tile.arrayY == 6 || tile.arrayX == 11 && tile.arrayY == 6)
@@ -126,14 +115,6 @@ Game.prototype.checkEnemiesPaths = function(tile) {
 };
 
 Game.prototype.updateEnemiesPath = function(){
-
-    //console.log(this.currentWave.enemies);
-    /*if (this.currentWave) {
-        for (var i = 0; i < this.currentWave.enemies.length; i++) {
-            var enemy = this.currentWave.enemies[i];
-            enemy.path = enemy.getPath(this.grid, {x: enemy.x, y: enemy.y}, {x:766, y:384});
-            enemy.initMovement();*/
-
     if(this.currentWave!=null){
         if(this.currentWave.enemies!=null) {
             this.currentWave.enemies.forEach(function (enemy) {

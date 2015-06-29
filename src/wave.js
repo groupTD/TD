@@ -8,7 +8,7 @@ function Wave(game, params) {
 
 Wave.prototype.isFinished = function () {
 	return this.addedEnemies == this.enemyCount && this.enemies.length == 0;
-}
+};
 
 Wave.prototype.addEnemy = function () {
     if (this.enemies.length < this.enemyCount && this.addedEnemies < this.enemyCount) {
@@ -33,13 +33,13 @@ Wave.prototype.pause = function () {
 	for (var i = 0; i < this.enemies.length; i++) {
         this.enemies[i].pauseMovement();
     }
-}
+};
 
 Wave.prototype.resume = function () {
 	for (var i = 0; i < this.enemies.length; i++) {
         this.enemies[i].resumeMovement();
     }
-}
+};
 
 Wave.prototype.removeEnemy = function (enemy) {
     var enemyIndex = -1;

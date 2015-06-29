@@ -7,7 +7,9 @@ function Game(width, height, stage, gridSettingsContainer) {
     this.rng = new Xor128(); // Create Random Number Generator
     this.towers = [];
     this.bullets = [];
-    this.enemies = [];
+
+    //this.enemies = [];
+
     this.paused = false;
     this.moving = false; ///< Moving something (temporary pause)
     this.mouseX = 0;
@@ -28,7 +30,8 @@ function Game(width, height, stage, gridSettingsContainer) {
 	this.levelStatusText = null;
     this.livesText = null;
     this.goldText = null;
-    /// A flag to defer initialization of game state to enale calling logic to
+
+    /// A flag to defer initialization of game state to enable calling logic to
     /// set event handlers on object creation in deserialization.
     this.initialized = false;
 }
@@ -47,23 +50,44 @@ Game.prototype.init = function (level) {
 
 Game.prototype.dispose = function () {
     this.currentWave.dispose();
+
 };
 
 
 Game.prototype.addTower = function(x,y) {
-    if (this.towers.length < 10) {
-        var tile = Entity.prototype.getTile(this.grid, x, y);
-        var tower = new Tower(this, {
-            texturePath: "assets/tower.png",
-            x: tile.x,
-            y: tile.y
-        });
-        this.setTileBlock(tile);
-        this.towers.push(tower);
-        tower.init(this.stage);
-        return tower;
+    /*TODO add check if outside canvas*/
+    var tile = Entity.prototype.getTile(this.grid, x, y);
+    if (undefined != tile) {
+        if (tile.blocked != 0) {
+            if (this.gold > 100) {
+                var tower = new Tower(this, {
+                    texturePath: "assets/tower.png",
+                    x: tile.x,
+                    y: tile.y
+                });
+                this.setTileBlock(tile);
+                this.towers.push(tower);
+                tower.init(this.stage);
+                this.gold = this.gold - 100;
+                this.updateEnemiesPath();
+                return tower;
+            }
+        }
     }
-    return null;
+};
+
+Game.prototype.updateEnemiesPath = function(){
+    //console.log(this.currentWave.enemies);
+    if (this.currentWave) {
+        for (var i = 0; i < this.currentWave.enemies.length; i++) {
+            var enemy = this.currentWave.enemies[i];
+            enemy.path = enemy.getPath(this.grid, {x: enemy.x, y: enemy.y}, {x:766, y:384});
+        }
+    }
+};
+
+Game.prototype.setTileBlock= function (tile) {
+            this.grid.tiles[tile.arrayX][tile.arrayY].blocked=0;
 };
 
 Game.prototype.setTileBlock= function (tile) {
@@ -109,7 +133,9 @@ Game.prototype.addCurrentLevelText = function () {
 	this.levelStatusText.x = (this.grid.horTilesLength * this.grid.horTilesCount)+10;
 	this.levelStatusText.y = (this.grid.verTilesLength * this.grid.verTilesCount) / 2+20;
 	stage.addChild(this.levelStatusText);
-}
+
+};
+
 
 Game.prototype.addLivesText = function () {
     game.stage.removeChild(game.livesText);
@@ -118,7 +144,9 @@ Game.prototype.addLivesText = function () {
     game.livesText.x = (this.grid.horTilesLength * this.grid.horTilesCount)+10;
     game.livesText.y = this.grid.verTilesLength;
     game.stage.addChild(this.livesText);
-}
+
+};
+
 
 Game.prototype.addGoldText = function () {
     stage.removeChild(this.goldText);
@@ -127,7 +155,9 @@ Game.prototype.addGoldText = function () {
     this.goldText.x = (this.grid.horTilesLength * this.grid.horTilesCount)+10;
     this.goldText.y = 2 * this.grid.verTilesLength;
     stage.addChild(this.goldText);
-}
+
+};
+
 
 
 Game.prototype.draw = function () {
@@ -139,12 +169,14 @@ Game.prototype.draw = function () {
 Game.prototype.pause = function() {
     this.paused = true;
     this.currentWave.pause();
-}
+
+};
 
 Game.prototype.resume = function() {
     this.paused = false;
     this.currentWave.resume();
-}
+};
+
 
 Game.prototype.update = function (dt, autoSaveHandler) {
     if (this.pause || this.moving)
@@ -186,7 +218,40 @@ Game.prototype.getTile = function (grid, xSearch, ySearch) {
         }
     }
 
-}
+};
+
+Game.prototype.getTile = function (grid, xSearch, ySearch) {
+
+    function Point(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    function Rectangle(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    function rectangleContainsPoint(rect, point) {
+        if (rect.width <= 0 || rect.height <= 0) {
+            return false;
+        }
+        return (point.x >= rect.x && point.x < rect.x + rect.width && point.y >= rect.y && point.y < rect.y + rect.height);
+    }
+
+    for (var xi = 0; xi < grid.horTilesCount; xi++) {
+        for (var yi = 0; yi < grid.verTilesCount; yi++) {
+            var point = new Point(xSearch, ySearch);
+            var rectangle = new Rectangle(grid.tiles[xi][yi].x, grid.tiles[xi][yi].y, grid.verTilesLength, grid.horTilesLength);
+            if (rectangleContainsPoint(rectangle, point)) {
+                return grid.tiles[xi][yi];
+            }
+        }
+    }
+
+};
 
 function getNavLevel1(grid) {
     var pathCoords = [];

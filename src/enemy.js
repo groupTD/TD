@@ -12,24 +12,33 @@ function Enemy(game, wave, params) {
 
 Enemy.prototype.getBitmap = function () {
     return this.bitmap;
-}
+};
 
 Enemy.prototype.init = function (stage) {
     // call base method
     Entity.prototype.init.call(this, stage);
     //Get Shortest Path
 	this.initMovement();
-}
+};
 
 Enemy.prototype.pauseMovement = function() {
     for(var i=0; i<this.tween.length;i++){
         this.tween[i].setPaused(true);
     }
     //createjs.Tween.removeTweens(this.bitmap);
-}
+};
+
+Enemy.prototype.getPath = function(grid, coords, destination) {
+    var path = Entity.prototype.getShortestPath(grid, coords, destination);
+    console.log(path);
+    return path;
+};
 
 Enemy.prototype.initMovement = function() {
-	var path = Entity.prototype.getShortestPath(game.grid, {x: this.x, y: this.y}, {x: 766, y: 384});
+
+	//var path = Entity.prototype.getShortestPath(game.grid, {x: this.x, y: this.y}, {x: 766, y: 384});
+    var path = this.getPath(game.grid, {x: this.x, y: this.y}, {x:766, y:384});
+
     var enemy = this;
     this.path = path;
     // move to level logic
@@ -56,18 +65,18 @@ Enemy.prototype.initMovement = function() {
     tweenObj.call(function () {
         that.wave.enemyFinished(that);
     })
-}
+};
 
 Enemy.prototype.resumeMovement = function() {
     for(var i=0; i<this.tween.length;i++){
         this.tween[i].setPaused(false);
     } //this.tween.setPaused(false);
-}
+};
 
 Enemy.prototype.dispose = function (stage) {
     Entity.prototype.dispose.call(this, stage);
 
     createjs.Tween.removeTweens(this.bitmap);
-}
+};
 
 

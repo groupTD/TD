@@ -62,7 +62,20 @@ function initGame() {
 	game.draw();
 		
 	this.document.onkeyup = keyBoardHandler;
+	this.document.onclick = mouseHandler;
 	createjs.Ticker.addEventListener("tick", tick);
+
+}
+
+function mouseHandler(event) {
+	console.log(event.x + " " + event.y);
+    if (!game.paused) {
+        var tile = Entity.prototype.getTile(game.grid, event.x, event.y);
+        if (undefined != tile) {
+            game.addTower(tile.x, tile.y);
+            stage.update();
+        }
+    }
 }
 
 function keyBoardHandler(event) {
@@ -108,15 +121,13 @@ function tick(event) {
 	if (!game.paused) {
 
         if (i++ % 10 == 0) {
-            var tower = game.addTower(165,(game.grid.verTilesCount*game.grid.verTilesLength)/2);
-            tower = game.addTower(222,(game.grid.verTilesCount*game.grid.verTilesLength)/2)-64;
-            tower = game.addTower(432,564);
-            tower = game.addTower(454,454);
-            tower = game.addTower(300,300);
-            var enemy = game.addEnemy();
+
+
+            game.addEnemy();
 
             //Gold giver Dev cheat
-            game.gold+=10;
+            game.gold+=100;
+
         }
         //Refresh lives/gold
         game.addLivesText();

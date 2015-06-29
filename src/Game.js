@@ -114,14 +114,6 @@ Game.prototype.checkEnemiesPaths = function(tile) {
 };
 
 Game.prototype.updateEnemiesPath = function(){
-
-    //console.log(this.currentWave.enemies);
-    /*if (this.currentWave) {
-        for (var i = 0; i < this.currentWave.enemies.length; i++) {
-            var enemy = this.currentWave.enemies[i];
-            enemy.path = enemy.getPath(this.grid, {x: enemy.x, y: enemy.y}, {x:766, y:384});
-            enemy.initMovement();*/
-
     if(this.currentWave!=null){
         if(this.currentWave.enemies!=null) {
             this.currentWave.enemies.forEach(function (enemy) {

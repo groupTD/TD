@@ -21,6 +21,11 @@ var boughtTower = null;
 var deleteShape;
 var frameTime = 0.1;
 
+var mouseClicked = false;
+var mouseClickedLength = 0;
+var mouseClickedX;
+var mouseClickedY;
+
 var mainMenu = new createjs.Container();
 
 function GridSettings() {
@@ -62,18 +67,24 @@ function initGame() {
 	game.draw();
 		
 	this.document.onkeyup = keyBoardHandler;
-	this.document.onclick = mouseHandler;
+	this.document.onmousedown = mouseDownHandler;
+    this.document.onmouseup = mouseUpHandler;
 	createjs.Ticker.addEventListener("tick", tick);
 
 }
-
-function mouseHandler(event) {
+function mouseDownHandler(event) {
+    if (!game.paused) {
+        mouseClicked=true;
+        mouseClickedX = event.pageX;
+        mouseClickedY = event.pageY;
+    }
+}
+function mouseUpHandler() {
 	if (!game.paused) {
-        var tile = Entity.prototype.getTile(game.grid, event.pageX, event.pageY);
-        if (undefined != tile) {
-            game.addTower(tile.x, tile.y);
-            stage.update();
-        }
+        mouseClicked=false;
+        mouseClickedLength=0;
+        mouseClickedX=0;
+        mouseClickedY=0;
     }
 }
 
@@ -114,11 +125,20 @@ function getPauseMenu() {
 	return pauseMenu;
 }
 
-
+function mouseClicking() {
+    if(mouseClicked)mouseClickedLength+=1;
+    if(mouseClickedLength>1){
+        var tile = Entity.prototype.getTile(game.grid, mouseClickedX, mouseClickedY);
+        if (undefined != tile) {
+            game.addTower(tile.x, tile.y);
+            stage.update();
+        }
+    }
+}
 
 function tick(event) {
 	if (!game.paused) {
-
+        mouseClicking();
         if (i++ % 10 == 0) {
             game.addEnemy();
             //Gold giver Dev cheat

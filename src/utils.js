@@ -15,11 +15,3 @@ function inherit(subclass, base) {
     }
     subclass.prototype.constructor = subclass;
 }
-
-function matvp(m,v){ // Matrix Vector product
-    return [m[0] * v[0] + m[1] * v[1], m[2] * v[0] + m[3] * v[1]];
-}
-
-function mattvp(m,v){ // Matrix Transpose Vector product
-    return [m[0] * v[0] + m[2] * v[1], m[1] * v[0] + m[3] * v[1]];
-}

@@ -1,9 +1,9 @@
-function Enemy(game, params) {
+function Enemy(game, wave, params) {
     Entity.call(this, game, params);
     this.speed = params.speed;
     this.tween = [];
     this.path;
-
+	this.wave = wave;
     // TODO: not implemented
     this.health = params.health;
     this.damage = params.damage;
@@ -19,17 +19,24 @@ Enemy.prototype.init = function (stage) {
     Entity.prototype.init.call(this, stage);
     //Get Shortest Path
 	this.initMovement();
-}
+};
 
 Enemy.prototype.pauseMovement = function() {
     for(var i=0; i<this.tween.length;i++){
         this.tween[i].setPaused(true);
     }
     //createjs.Tween.removeTweens(this.bitmap);
-}
+};
+
+Enemy.prototype.getPath = function(grid, coords, destination) {
+    var path = Entity.prototype.getShortestPath(grid, coords, destination);
+    console.log(path);
+    return path;
+};
 
 Enemy.prototype.initMovement = function() {
-	var path = Entity.prototype.getShortestPath(game.grid, {x: this.x, y: this.y}, {x: 767, y: 767});
+	//var path = Entity.prototype.getShortestPath(game.grid, {x: this.x, y: this.y}, {x: 766, y: 384});
+    var path = this.getPath(game.grid, {x: this.x, y: this.y}, {x:766, y:384});
     var enemy = this;
     this.path = path;
     // move to level logic
@@ -43,10 +50,10 @@ Enemy.prototype.initMovement = function() {
     }
 
     //Create Tween for shortest path
-    for (var j = 0; j < path.length - 1; j++) {
+    for (var j = 0; j < path.length ; j++) {
         var tw = {
-            x: game.grid.tiles[path[j].x][path[j].y].x,
-            y: game.grid.tiles[path[j].x][path[j].y].y
+            x: game.grid.tiles[path[j].x][path[j].y].x+20,
+            y: game.grid.tiles[path[j].x][path[j].y].y+20
         };
         tweenObj.to(tw, this.speed, createjs.Ease.linear).call(updateEnemyCoords);
     }
@@ -54,7 +61,7 @@ Enemy.prototype.initMovement = function() {
     // signal game that enemy is finished
     var that = this;
     tweenObj.call(function () {
-        that.game.enemyFinished(that);
+        that.wave.enemyFinished(that);
     })
 }
 

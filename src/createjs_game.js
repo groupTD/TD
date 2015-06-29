@@ -1,4 +1,3 @@
-var consoleSize = 25;
 var i = 0;
 
 var stage;
@@ -10,8 +9,7 @@ var width;
 var height;
 var game;
 var pauseMenu;
-var rockImage = new createjs.Bitmap("assets/rock.jpg");
-var backImage = new createjs.Bitmap("assets/back4.png");
+var backImage = new createjs.Bitmap("assets/back5.jpg");
 var checkedImage = new createjs.Bitmap("assets/checked.png");
 var lockedImage = new createjs.Bitmap("assets/locked.png");
 var gridSettingsContainer = new GridSettings;
@@ -108,6 +106,7 @@ function getPauseMenu() {
 
 function tick(event) {
 	if (!game.paused) {
+
         if (i++ % 10 == 0) {
             var tower = game.addTower(165,(game.grid.verTilesCount*game.grid.verTilesLength)/2);
             tower = game.addTower(222,(game.grid.verTilesCount*game.grid.verTilesLength)/2)-64;
@@ -115,7 +114,13 @@ function tick(event) {
             tower = game.addTower(454,454);
             tower = game.addTower(300,300);
             var enemy = game.addEnemy();
-		}
+
+            //Gold giver Dev cheat
+            game.gold+=10;
+        }
+        //Refresh lives/gold
+        game.addLivesText();
+        game.addGoldText();
 		stage.update();	
 	}    
 }

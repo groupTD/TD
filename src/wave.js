@@ -19,7 +19,7 @@ Wave.prototype.addEnemy = function () {
 			y: (game.grid.verTilesCount*game.grid.verTilesLength)/2,
 			health: 10 * this.difficulty
 		});
-		
+
         this.enemies.push(enemy);
         enemy.init(this.game.stage);
 		this.addedEnemies++;

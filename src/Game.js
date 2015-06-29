@@ -1,6 +1,3 @@
-// Remember global object reference for deserialization.
-// The variable "window" should be the same thing in a browser,
-// but we could write this script independent of running environment.
 var global = this;
 
 function Game(width, height, stage, gridSettingsContainer) {
@@ -11,12 +8,12 @@ function Game(width, height, stage, gridSettingsContainer) {
     this.towers = [];
     this.bullets = [];
     this.enemies = [];
-    this.towers = [];
     this.paused = false;
     this.moving = false; ///< Moving something (temporary pause)
     this.mouseX = 0;
     this.mouseY = 0;
-    this.score = 0;
+    this.gold = 400;
+    this.lives = 5;
     this.credit = 0;
     this.progress = 0;
     this.stage = stage;
@@ -29,6 +26,8 @@ function Game(width, height, stage, gridSettingsContainer) {
 	this.currentWave = null;
 	this.difficulty = 1;
 	this.levelStatusText = null;
+    this.livesText = null;
+    this.goldText = null;
     /// A flag to defer initialization of game state to enale calling logic to
     /// set event handlers on object creation in deserialization.
     this.initialized = false;
@@ -44,10 +43,6 @@ Game.prototype.init = function (level) {
     this.initialized = true;
     this.onInit();
     this.grid.init();
-    if (level == 1) {
-        this.path.init(this.grid, getNavLevel1(this.grid));
-        this.enemyCount = 5;
-    }
 };
 
 Game.prototype.dispose = function () {
@@ -109,11 +104,88 @@ Game.prototype.addEnemy = function (enemy) {
 
 Game.prototype.addCurrentLevelText = function () {
 	stage.removeChild(this.levelStatusText);
-	var text = "Current creep level: " + this.difficulty;
-	this.levelStatusText = new createjs.Text(text, "40px Arial", "#ff7700");
-	this.levelStatusText.x = (this.grid.horTilesLength * this.grid.horTilesCount) / 2;
-	this.levelStatusText.y = (this.grid.verTilesLength * this.grid.verTilesCount) / 2;
+	var text = "Wave    " + this.difficulty;
+	this.levelStatusText = new createjs.Text(text, "bold 22px Arial", "#663300");
+	this.levelStatusText.x = (this.grid.horTilesLength * this.grid.horTilesCount)+10;
+	this.levelStatusText.y = (this.grid.verTilesLength * this.grid.verTilesCount) / 2+20;
 	stage.addChild(this.levelStatusText);
+}
+
+Game.prototype.addLivesText = function () {
+    game.stage.removeChild(game.livesText);
+    var text = "Lives    " + game.lives;
+    game.livesText = new createjs.Text(text, "bold 22px Arial", "#663300");
+    game.livesText.x = (this.grid.horTilesLength * this.grid.horTilesCount)+10;
+    game.livesText.y = this.grid.verTilesLength;
+    game.stage.addChild(this.livesText);
+}
+
+Game.prototype.addGoldText = function () {
+    stage.removeChild(this.goldText);
+    var text = "Gold  " + this.gold;
+    this.goldText = new createjs.Text(text, "bold 22px Arial", "#663300");
+    this.goldText.x = (this.grid.horTilesLength * this.grid.horTilesCount)+10;
+    this.goldText.y = 2 * this.grid.verTilesLength;
+    stage.addChild(this.goldText);
+}
+
+
+Game.prototype.draw = function () {
+    this.grid.draw(this.stage);
+  /*  this.addGoldText();
+    this.addLivesText();*/
+};
+
+Game.prototype.pause = function() {
+    this.paused = true;
+    this.currentWave.pause();
+}
+
+Game.prototype.resume = function() {
+    this.paused = false;
+    this.currentWave.resume();
+}
+
+Game.prototype.update = function (dt, autoSaveHandler) {
+    if (this.pause || this.moving)
+        return;
+};
+
+Game.prototype.onInit = function () {
+
+};
+
+Game.prototype.getTile = function (grid, xSearch, ySearch) {
+
+    function Point(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    function Rectangle(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    function rectangleContainsPoint(rect, point) {
+        if (rect.width <= 0 || rect.height <= 0) {
+            return false;
+        }
+        return (point.x >= rect.x && point.x < rect.x + rect.width && point.y >= rect.y && point.y < rect.y + rect.height);
+    }
+
+    for (var xi = 0; xi < grid.horTilesCount; xi++) {
+        for (var yi = 0; yi < grid.verTilesCount; yi++) {
+            var point = new Point(xSearch, ySearch);
+            var rectangle = new Rectangle(grid.tiles[xi][yi].x, grid.tiles[xi][yi].y, grid.verTilesLength, grid.horTilesLength);
+            if (rectangleContainsPoint(rectangle, point)) {
+                return grid.tiles[xi][yi];
+            }
+        }
+    }
+
 }
 
 function getNavLevel1(grid) {
@@ -153,122 +225,4 @@ function getNavLevel1(grid) {
     // |
     // -------------
     return pathCoords;
-}
-
-Game.prototype.draw = function () {
-    this.grid.draw(this.stage);
-};
-
-Game.prototype.pause = function() {
-    this.paused = true;
-    this.currentWave.pause();
-}
-
-Game.prototype.resume = function() {
-    this.paused = false;
-    this.currentWave.resume();
-}
-
-Game.prototype.deserialize = function (stream) {
-
-};
-
-Game.prototype.startStage = function (stage) {
-
-};
-
-Game.prototype.getStageProgress = function () {
-
-};
-
-Game.prototype.update = function (dt, autoSaveHandler) {
-    if (this.pause || this.moving)
-        return;
-};
-
-Game.prototype.serialize = function () {
-
-};
-
-Game.prototype.addBullet = function (b) {
-
-};
-
-Game.prototype.isGameOver = function () {
-
-};
-
-Game.prototype.hitTest = function (target) {
-
-};
-
-Game.prototype.separateTower = function (tower) {
-
-};
-
-Game.prototype.onClick = function (e) {
-
-};
-
-Game.prototype.mouseMove = function (e) {
-
-};
-
-Game.prototype.addTowerEvent = function (t) {
-
-};
-
-Game.prototype.addEnemyEvent = function (e) {
-
-};
-
-Game.prototype.addBulletEvent = function (b) {
-
-};
-
-Game.prototype.onHeal = function (target, healer) {
-
-};
-
-Game.prototype.onInit = function () {
-
-};
-
-Game.prototype.onStageClear = function () {
-
-};
-
-Game.prototype.onBeamHit = function (x, y) {
-
-};
-Game.prototype.getTile = function (grid, xSearch, ySearch) {
-
-    function Point(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    function Rectangle(x, y, width, height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-    }
-
-    function rectangleContainsPoint(rect, point) {
-        if (rect.width <= 0 || rect.height <= 0) {
-            return false;
-        }
-        return (point.x >= rect.x && point.x < rect.x + rect.width && point.y >= rect.y && point.y < rect.y + rect.height);
-    }
-
-    for (var xi = 0; xi < grid.horTilesCount; xi++) {
-        for (var yi = 0; yi < grid.verTilesCount; yi++) {
-            var point = new Point(xSearch, ySearch);
-            var rectangle = new Rectangle(grid.tiles[xi][yi].x, grid.tiles[xi][yi].y, grid.verTilesLength, grid.horTilesLength);
-            if (rectangleContainsPoint(rectangle, point)) {
-                return grid.tiles[xi][yi];
-            }
-        }
-    }
 }

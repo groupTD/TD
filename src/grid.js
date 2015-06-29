@@ -51,6 +51,7 @@ Grid.prototype.draw = function (stage) {
     }
 
     for (var x = this.gridXStartCoord; x < width; x += this.horTilesLength) {
+        if(x<=this.horTilesCount*this.horTilesLength)
         drawLine(x, 0, this);
     }
     for (var y = this.gridYStartCoord; y < height; y += this.verTilesLength) {

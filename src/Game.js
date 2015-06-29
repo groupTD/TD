@@ -291,3 +291,7 @@ function getNavLevel1(grid) {
     // -------------
     return pathCoords;
 }
+
+Game.prototype.addProjectile = function(pr) {
+
+};

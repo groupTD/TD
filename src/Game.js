@@ -66,45 +66,40 @@ Game.prototype.dispose = function () {
 
 
 Game.prototype.addTower = function(x,y) {
-    /*TODO add check if outside canvas*/
     var tile = Entity.prototype.getTile(this.grid, x, y);
-    console.log(this.checkEnemiesPaths());
-    if (undefined != tile) {
-        if (tile.blocked != 0) {
-            if (this.gold > 100) {
-                var tower = new Tower(this, {
-                    texturePath: "assets/tower.png",
-                    x: tile.x,
-                    y: tile.y
-                });
-                this.towers.push(tower);
-                tower.init(this.stage);
-                this.gold = this.gold - 100;
-                this.setTileBlock(tile);
-                this.grid.tiles[tile.arrayX][tile.arrayY].hasTower = 1;
-                this.grid.tiles[tile.arrayX][tile.arrayY].tower = tower;
-                this.updateEnemiesPath();
-                return tower;
+    if (this.checkEnemiesPaths(tile) != 1) {
+        if (undefined != tile) {
+            if (tile.blocked != 0) {
+                if (this.gold >= 100) {
+                    var tower = new Tower(this, {
+                        texturePath: "assets/tower.png",
+                        x: tile.x,
+                        y: tile.y
+                    });
+                    this.towers.push(tower);
+                    tower.init(this.stage);
+                    this.gold = this.gold - 100;
+                    this.setTileBlock(tile);
+                    this.grid.tiles[tile.arrayX][tile.arrayY].hasTower = 1;
+                    this.grid.tiles[tile.arrayX][tile.arrayY].tower = tower;
+                    this.updateEnemiesPath();
+                    return tower;
+                }
             }
         }
     }
 };
 
-Game.prototype.checkEnemiesPaths = function() {
-    //console.log(this.currentWave.enemies);
-    if (this.currentWave) {
-        for (var i = 0; i < this.currentWave.enemies.length; i++) {
-            var enemy = this.currentWave.enemies[i];
-            var path = enemy.getPath(this.grid, {x: enemy.x, y: enemy.y}, {x:766, y:384});
-            console.log(path.length);
-            //if (path == [])
-            if (path === undefined) {
-                return 1;
-            } else
-                return path;
-        }
-    } else
-        return "No enemies";
+
+Game.prototype.checkEnemiesPaths = function(tile) {
+    var origvalue = this.grid.tiles[tile.arrayX][tile.arrayY].blocked;
+    this.grid.tiles[tile.arrayX][tile.arrayY].blocked = 0;
+    //console.log("Inside");
+    var path = Entity.prototype.getShortestPath(this.grid, {x: 0, y: 384}, {x:766, y:384});
+    this.grid.tiles[tile.arrayX][tile.arrayY].blocked = origvalue;
+    if (path.length == 0) {
+        return 1;
+    }
 };
 
 Game.prototype.updateEnemiesPath = function(){

@@ -92,4 +92,5 @@ Grid.prototype.draw = function (stage) {
             drawGridFrame(this.tiles[i][n],this);
         }
     }
-}
+};
+

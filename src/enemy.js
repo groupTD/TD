@@ -3,8 +3,7 @@ function Enemy(game, wave, params) {
     this.speed = params.speed;
     this.tween = [];
     this.newPath =false;
-    this.path;
-	this.wave = wave;
+    this.wave = wave;
     // TODO: not implemented
     this.health = params.health;
     this.damage = params.damage;

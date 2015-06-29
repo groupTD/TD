@@ -4,8 +4,6 @@
 function Tower(game, params){
     Entity.call(this, game, params);
     this.tween = [];
-    this.kills = 0;
-    this.projSpeed = 0;
 }
 //inherit(Tower, Entity);
 
@@ -17,23 +15,52 @@ Tower.prototype.init = function (stage) {
 };
 
 Tower.prototype.initTower = function (stage){
-    this.angle = 0;
-    this.health = 10;
+    //this.angle = 0;
+    //this.health = 10;
     this.target = null;
-    this.id = Tower.prototype.idGen++;
-    this.cooldown = 4;
+    //this.id = Tower.prototype.idGen++;
+    //this.cooldown = 4;
     this.kills = 0;
-    this.damage = 0;
+    this.damage = 5;
+    this.range = 200;
     this.projSpeed = 100;
 
 };
 
 Tower.prototype.dispose = function (stage) {
     Entity.prototype.dispose.call(this, stage);
-
     createjs.Tween.removeTweens(this.bitmap);
 };
 
+Tower.prototype.update = function(game) {
+    console.log("I will shoot yeah");
+    if (game.currentWave) {
+        getenemy: for (var i = 0; i < game.currentWave.enemies.length; i++) {
+            var enemy = game.currentWave.enemies[i];
+            console.log(enemy.x - this.x);
+            console.log(Math.pow(enemy.x - this.x, 2));
+            if (Math.pow(enemy.x - this.x, 2) + Math.pow(enemy.y - this.y, 2) < Math.pow(this.range, 2)) {
+                this.target = enemy;
+                break getenemy;
+            }
+        }
+    }
+    function onHit() {
+        //TODO
+    }
+    var proj = new Projectile(game, {
+        texturePath: "assets/projectile.png",
+        x: this.x,
+        y: this.y
+    });
+    var tweenObj = createjs.Tween.get(proj.bitmap);
+    tweenObj.to({x: this.target.x, y: this.target.y}, this.projSpeed, createjs.Ease.linear()).call(onHit);
+    this.tween.push(tweenObj);
+
+    console.log(this.target);
+};
+
+/*
 Tower.prototype.idGen = 0;
 
 Tower.prototype.cost = function(){
@@ -91,4 +118,4 @@ Projectile.prototype.update = function(dt){
         this.vanished = true;
         return 0;
     }
-};
+};*/

@@ -120,13 +120,14 @@ function tick(event) {
 	if (!game.paused) {
 
         if (i++ % 10 == 0) {
-
-
             game.addEnemy();
-
             //Gold giver Dev cheat
             game.gold+=100;
-
+        }
+        if (i % 20 == 0){
+            for (var j = 0; j < game.towers.length; j++) {
+                game.towers[j].update(game);
+            }
         }
         //Refresh lives/gold
         game.addLivesText();

@@ -64,18 +64,6 @@ Game.prototype.dispose = function () {
 
 };
 
-
-/*<<<<<<< HEAD
-Game.prototype.addTower = function(x,y) {
-    var tile = Entity.prototype.getTile(this.grid, x, y);
-    if (this.checkEnemiesPaths(tile) != 1) {
-        if (undefined != tile) {
-            if (tile.blocked != 0) {
-                if (this.gold >= 100) {
-
-                }
-=======*/
-
 Game.prototype.addTower = function (x, y) {
     var hardcodeNoPlacement = function (tile) {
         if (tile.arrayX == 0 && tile.arrayY == 6 || tile.arrayX == 11 && tile.arrayY == 6)
@@ -90,7 +78,7 @@ Game.prototype.addTower = function (x, y) {
         if (!hardcodeNoPlacement(tile)) {
             if (this.checkEnemiesPaths(tile) != 1) {
                 if (tile.blocked != 0) {
-                    if (this.gold > 100) {
+                    if (this.gold >= 100) {
 
                         var tower = new Tower(this, {
                             texturePath: "assets/tower.png",

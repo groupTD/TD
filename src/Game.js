@@ -6,7 +6,7 @@ function Game(width, height, stage, gridSettingsContainer) {
     this.height = height;
     this.rng = new Xor128(); // Create Random Number Generator
     this.towers = [];
-    this.bullets = [];
+    this.projectiles = [];
 
     //this.enemies = [];
 
@@ -34,6 +34,17 @@ function Game(width, height, stage, gridSettingsContainer) {
     /// A flag to defer initialization of game state to enable calling logic to
     /// set event handlers on object creation in deserialization.
     this.initialized = false;
+
+    this.hitSpriteSheet = new createjs.SpriteSheet({
+        images: ["assets/explode.png"],
+        frames: {width: 16, height: 16, regX: 8, regY: 8},
+        animations: {
+            explosion: [0, 6]
+        }
+    });
+
+    this.hitSpriteTemplate = new createjs.Sprite(this.hitSpriteSheet);
+    this.effectContainer = new createjs.Container();
 }
 
 Game.prototype.global_time = 0;
@@ -57,6 +68,7 @@ Game.prototype.dispose = function () {
 Game.prototype.addTower = function(x,y) {
     /*TODO add check if outside canvas*/
     var tile = Entity.prototype.getTile(this.grid, x, y);
+    console.log(this.checkEnemiesPaths);
     if (undefined != tile) {
         if (tile.blocked != 0) {
             if (this.gold > 100) {
@@ -65,12 +77,28 @@ Game.prototype.addTower = function(x,y) {
                     x: tile.x,
                     y: tile.y
                 });
-                this.setTileBlock(tile);
                 this.towers.push(tower);
                 tower.init(this.stage);
                 this.gold = this.gold - 100;
+                this.setTileBlock(tile);
+                this.grid.tiles[tile.arrayX][tile.arrayY].hasTower = 1;
+                this.grid.tiles[tile.arrayX][tile.arrayY].tower = tower;
                 this.updateEnemiesPath();
                 return tower;
+            }
+        }
+    }
+};
+
+Game.prototype.checkEnemiesPaths = function() {
+    //console.log(this.currentWave.enemies);
+    if (this.currentWave) {
+        for (var i = 0; i < this.currentWave.enemies.length; i++) {
+            var enemy = this.currentWave.enemies[i];
+            var path = enemy.getPath(this.grid, {x: enemy.x, y: enemy.y}, {x:766, y:384});
+            //if (path == [])
+            if (path === undefined) {
+                return 1;
             }
         }
     }
@@ -82,12 +110,9 @@ Game.prototype.updateEnemiesPath = function(){
         for (var i = 0; i < this.currentWave.enemies.length; i++) {
             var enemy = this.currentWave.enemies[i];
             enemy.path = enemy.getPath(this.grid, {x: enemy.x, y: enemy.y}, {x:766, y:384});
+            enemy.initMovement();
         }
     }
-};
-
-Game.prototype.setTileBlock= function (tile) {
-            this.grid.tiles[tile.arrayX][tile.arrayY].blocked=0;
 };
 
 Game.prototype.setTileBlock= function (tile) {
@@ -293,5 +318,34 @@ function getNavLevel1(grid) {
 }
 
 Game.prototype.addProjectile = function(pr) {
-
+    this.projectiles.push(pr);
+    this.addProjectileEvent(pr);
 };
+
+Game.prototype.addProjectileEvent = function(pr){
+    var shape = new createjs.Container();
+    shape = new createjs.Shape();
+    shape.graphics.beginFill(pr.team == 0 ? "#ff0000" : "#ffff00").drawRect(-5, -2, 5, 2);
+    this.effectContainer.addChild(shape);
+
+
+    pr.onUpdate = function(dt) {
+        shape.x = this.x;
+        shape.y = this.y;
+        shape.rotation = this.angle * 360 / 2 / Math.PI;
+    };
+
+    pr.onDelete = function() {
+        var sprite = hitSpriteTemplate.clone();
+        sprite.x = this.x;
+        sprite.y = this.y;
+        sprite.gotoAndPlay("Explosion");
+        sprite.addEventListener("animationend", function(event){
+            event.target.stop();
+            this.effectContainer.removeChild(event.target);
+        });
+        this.effectContainer.addChild(sprite);
+    };
+};
+
+

@@ -17,6 +17,7 @@ function Tile(grid, x, y, tileNumber, arrayX, arrayY,blocked) {
     this.arrayX = arrayX;
     this.arrayY = arrayY;
     this.texture;
+    this.hasTower = 0;
 }
 
 Grid.prototype.init = function () {

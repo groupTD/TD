@@ -16,7 +16,7 @@ Wave.prototype.addEnemy = function () {
 			texturePath: "assets/enemy.png",
 			speed: 1000,
 			x: 0,
-			y: (game.grid.verTilesCount*game.grid.verTilesLength)/2,
+			y: (game.grid.verTilesCount * game.grid.verTilesLength) / 2 + 20,
 			health: 10 * this.difficulty
 		});
 

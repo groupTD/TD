@@ -68,8 +68,7 @@ function initGame() {
 }
 
 function mouseHandler(event) {
-	console.log(event.x + " " + event.y);
-    if (!game.paused) {
+	if (!game.paused) {
         var tile = Entity.prototype.getTile(game.grid, event.x, event.y);
         if (undefined != tile) {
             game.addTower(tile.x, tile.y);

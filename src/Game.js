@@ -68,7 +68,7 @@ Game.prototype.dispose = function () {
 Game.prototype.addTower = function(x,y) {
     /*TODO add check if outside canvas*/
     var tile = Entity.prototype.getTile(this.grid, x, y);
-    console.log(this.checkEnemiesPaths);
+    console.log(this.checkEnemiesPaths());
     if (undefined != tile) {
         if (tile.blocked != 0) {
             if (this.gold > 100) {
@@ -96,12 +96,15 @@ Game.prototype.checkEnemiesPaths = function() {
         for (var i = 0; i < this.currentWave.enemies.length; i++) {
             var enemy = this.currentWave.enemies[i];
             var path = enemy.getPath(this.grid, {x: enemy.x, y: enemy.y}, {x:766, y:384});
+            console.log(path.length);
             //if (path == [])
             if (path === undefined) {
                 return 1;
-            }
+            } else
+                return path;
         }
-    }
+    } else
+        return "No enemies";
 };
 
 Game.prototype.updateEnemiesPath = function(){

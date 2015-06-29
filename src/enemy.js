@@ -30,7 +30,7 @@ Enemy.prototype.pauseMovement = function() {
 
 Enemy.prototype.getPath = function(grid, coords, destination) {
     var path = Entity.prototype.getShortestPath(grid, coords, destination);
-    console.log(path);
+    //console.log(path);
     return path;
 };
 

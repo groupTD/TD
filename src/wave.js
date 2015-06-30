@@ -14,7 +14,7 @@ Wave.prototype.addEnemy = function () {
     if (this.enemies.length < this.enemyCount && this.addedEnemies < this.enemyCount) {
 		var enemy = new Enemy(this.game, this, {
 			texturePath: "assets/enemy.png",
-			speed: 200,
+			speed: 1000,
 			x: 0,
 			y: (game.grid.verTilesCount * game.grid.verTilesLength) / 2 + 20,
 			health: 10 * this.difficulty

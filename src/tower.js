@@ -21,7 +21,7 @@ Tower.prototype.initTower = function (stage){
     //this.id = Tower.prototype.idGen++;
     //this.cooldown = 4;
     this.kills = 0;
-    this.damage = 5;
+    this.damage = 10;
     this.range = 200;
     this.projSpeed = 100;
 
@@ -33,20 +33,21 @@ Tower.prototype.dispose = function (stage) {
 };
 
 Tower.prototype.update = function(game) {
-    console.log("I will shoot yeah");
     if (game.currentWave) {
         getenemy: for (var i = 0; i < game.currentWave.enemies.length; i++) {
             var enemy = game.currentWave.enemies[i];
-            console.log(enemy.x - this.x);
-            console.log(Math.pow(enemy.x - this.x, 2));
             if (Math.pow(enemy.x - this.x, 2) + Math.pow(enemy.y - this.y, 2) < Math.pow(this.range, 2)) {
                 this.target = enemy;
                 break getenemy;
             }
         }
     }
-    function onHit() {
-        //TODO
+    function onHit(tower, game) {
+        tower.target.health = tower.target.health - this.damage;
+        if (tower.target.health < 0) {
+            Wave.prototype.removeEnemy(tower.target);
+        }
+        game.gold += 100;
     }
     var proj = new Projectile(game, {
         texturePath: "assets/projectile.png",
@@ -54,10 +55,8 @@ Tower.prototype.update = function(game) {
         y: this.y
     });
     var tweenObj = createjs.Tween.get(proj.bitmap);
-    tweenObj.to({x: this.target.x, y: this.target.y}, this.projSpeed, createjs.Ease.linear()).call(onHit);
+    tweenObj.to({x: this.target.x, y: this.target.y}, this.projSpeed, createjs.Ease.linear()).call(onHit(this, game));
     this.tween.push(tweenObj);
-
-    console.log(this.target);
 };
 
 /*

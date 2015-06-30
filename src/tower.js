@@ -33,12 +33,12 @@ Tower.prototype.dispose = function (stage) {
 };
 
 Tower.prototype.update = function(game) {
-    console.log("I will shoot yeah");
+    //console.log("I will shoot yeah");
     if (game.currentWave) {
         getenemy: for (var i = 0; i < game.currentWave.enemies.length; i++) {
             var enemy = game.currentWave.enemies[i];
-            console.log(enemy.x - this.x);
-            console.log(Math.pow(enemy.x - this.x, 2));
+            //console.log(enemy.x - this.x);
+            //console.log(Math.pow(enemy.x - this.x, 2));
             if (Math.pow(enemy.x - this.x, 2) + Math.pow(enemy.y - this.y, 2) < Math.pow(this.range, 2)) {
                 this.target = enemy;
                 break getenemy;
@@ -48,16 +48,27 @@ Tower.prototype.update = function(game) {
     function onHit() {
         //TODO
     }
-    var proj = new Projectile(game, {
-        texturePath: "assets/projectile.png",
-        x: this.x,
-        y: this.y
-    });
-    var tweenObj = createjs.Tween.get(proj.bitmap);
-    tweenObj.to({x: this.target.x, y: this.target.y}, this.projSpeed, createjs.Ease.linear()).call(onHit);
+
+    function bitmap(stage, tower) {
+        var bitmap = new createjs.Bitmap("assets/projectile.png");
+        bitmap.x = tower.x;
+        bitmap.y = tower.y;
+        stage.addChild(bitmap);
+        return bitmap;
+    }
+
+    var tweenObj = createjs.Tween.get(bitmap(game.stage, this));
+
+    var target = this.target;
+    tweenObj.to({x: target.x, y: target.y}, 1000, createjs.Ease.linear()).call(onHit);
     this.tween.push(tweenObj);
 
-    console.log(this.target);
+    var that = this;
+    tweenObj.call(function () {
+        //Da se mahat kartinkite
+        //that.wave.enemyFinished(that);
+    })
+   // console.log(this.target);
 };
 
 /*

@@ -46,11 +46,13 @@ Tower.prototype.update = function(game) {
         function onHit() {
             tower.target.health = tower.target.health - tower.damage;
             if (tower.target.health < 0) {
-                var index = game.currentWave.enemies.indexOf(tower.target);
-                if (index > -1) {
-                    game.currentWave.enemies.splice(index, 1);
-                    tower.target.dispose(game.stage);
-                    game.gold += 100;
+                if (game.currentWave.enemies) {
+                    var index = game.currentWave.enemies.indexOf(tower.target);
+                    if (index > -1) {
+                        game.currentWave.enemies.splice(index, 1);
+                        tower.target.dispose(game.stage);
+                        game.gold += 100;
+                    }
                 }
             }
         }

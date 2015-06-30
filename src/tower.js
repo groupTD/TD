@@ -42,15 +42,15 @@ Tower.prototype.update = function(game) {
         }
     }
     if (this.target) {
-
-        function onHit(tower) {
+        var tower = this;
+        function onHit() {
             tower.target.health = tower.target.health - tower.damage;
             if (tower.target.health < 0) {
-                var index = tower.game.currentWave.enemies.indexOf(tower.target);
+                var index = game.currentWave.enemies.indexOf(tower.target);
                 if (index > -1) {
-                    tower.game.currentWave.enemies.splice(index, 1);
-                    tower.target.dispose(tower.game.stage);
-                    tower.game.gold += 100;
+                    game.currentWave.enemies.splice(index, 1);
+                    tower.target.dispose(game.stage);
+                    game.gold += 100;
                 }
             }
         }
@@ -66,7 +66,7 @@ Tower.prototype.update = function(game) {
         var tweenObj = createjs.Tween.get(bitmap(game.stage, this));
 
         var target = this.target;
-        tweenObj.to({x: target.x, y: target.y}, this.projSpeed, createjs.Ease.linear()).call(onHit(this));
+        tweenObj.to({x: target.x, y: target.y}, this.projSpeed, createjs.Ease.linear()).call(onHit);
         this.tween.push(tweenObj);
 
         /*var that = this;

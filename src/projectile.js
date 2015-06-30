@@ -8,3 +8,9 @@ Projectile.prototype.init = function (stage) {
     Entity.prototype.init.call(this, stage);
     //make tower
 };
+
+Projectile.prototype.dispose = function (stage) {
+    Entity.prototype.dispose.call(this, stage);
+
+    createjs.Tween.removeTweens(this.bitmap);
+};

@@ -1,25 +1,19 @@
 var i = 0;
 
 var stage;
-var towerContainer;
-var enemyContainer;
-var topContainer;
+
 var canvas;
 var width;
 var height;
 var game;
 var pauseMenu;
 var backImage = new createjs.Bitmap("assets/back5.jpg");
-var checkedImage = new createjs.Bitmap("assets/checked.png");
-var lockedImage = new createjs.Bitmap("assets/locked.png");
+
 var gridSettingsContainer = new GridSettings;
 
-var explosionSpriteTemplate;
+
 var hitSpriteTemplate;
-var pauseText;
-var boughtTower = null;
-var deleteShape;
-var frameTime = 0.1;
+
 
 var mouseClicked = false;
 var mouseClickedLength = 0;
@@ -51,7 +45,7 @@ function initMenu() {
 	startText.x = width / 2 - 50;
 	startText.y = height / 2;
 	
-	startText.addEventListener('click', function(event) {
+	startText.addEventListener('click', function() {
 		stage.removeChild(mainMenu);
 		initGame();
 	});
@@ -126,8 +120,8 @@ function getPauseMenu() {
 }
 
 function mouseClicking() {
-    if(mouseClicked)mouseClickedLength+=1;
-    if(mouseClickedLength>1){
+    if (mouseClicked)mouseClickedLength += 1;
+    if (mouseClickedLength > 1) {
         var tile = Entity.prototype.getTile(game.grid, mouseClickedX, mouseClickedY);
         if (undefined != tile) {
             game.addTower(tile.x, tile.y);
@@ -136,7 +130,7 @@ function mouseClicking() {
     }
 }
 
-function tick(event) {
+function tick() {
 	if (!game.paused) {
         mouseClicking();
         if (i++ % 10 == 0) {

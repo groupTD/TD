@@ -14,16 +14,12 @@ Tower.prototype.init = function (stage) {
     this.initTower();
 };
 
-Tower.prototype.initTower = function (stage){
-    //this.angle = 0;
-    //this.health = 10;
+Tower.prototype.initTower = function (){
     this.target = null;
-    //this.id = Tower.prototype.idGen++;
-    //this.cooldown = 4;
     this.kills = 0;
     this.damage = 10;
     this.range = 200;
-    this.projSpeed = 100;
+    this.projSpeed = 200;
 
 };
 
@@ -33,53 +29,50 @@ Tower.prototype.dispose = function (stage) {
 };
 
 Tower.prototype.update = function(game) {
-//<<<<<<< HEAD
-    //console.log("I will shoot yeah");
     if (game.currentWave) {
-        getenemy: for (var i = 0; i < game.currentWave.enemies.length; i++) {
+        for (var i = 0; i < game.currentWave.enemies.length; i++) {
             var enemy = game.currentWave.enemies[i];
-            //console.log(enemy.x - this.x);
-            //console.log(Math.pow(enemy.x - this.x, 2));
-/*=======
-    if (game.currentWave) {
-        getenemy: for (var i = 0; i < game.currentWave.enemies.length; i++) {
-            var enemy = game.currentWave.enemies[i];
->>>>>>> 37f68d8f71d4472691cca685da14d0bed08526ed*/
             if (Math.pow(enemy.x - this.x, 2) + Math.pow(enemy.y - this.y, 2) < Math.pow(this.range, 2)) {
                 this.target = enemy;
-                break getenemy;
+                break;
+            } else {
+                this.target = null;
             }
         }
     }
-    function onHit(tower, game) {
-        tower.target.health = tower.target.health - this.damage;
-        if (tower.target.health < 0) {
-            Wave.prototype.removeEnemy(tower.target);
+    if (this.target) {
+        function onHit(tower, game) {
+            tower.target.health = tower.target.health - tower.damage;
+            if (tower.target.health < 0) {
+                tower.target = null;
+            }
+            game.gold += 100;
         }
-        game.gold += 100;
+
+        function bitmap(stage, tower) {
+            var bitmap = new createjs.Bitmap("assets/projectile.png");
+            bitmap.x = tower.x + 32;
+            bitmap.y = tower.y;
+            stage.addChild(bitmap);
+            return bitmap;
+        }
+
+        var tweenObj = createjs.Tween.get(bitmap(game.stage, this));
+
+        var target = this.target;
+        tweenObj.to({x: target.x, y: target.y}, this.projSpeed, createjs.Ease.linear()).call(onHit(this, game));
+        this.tween.push(tweenObj);
+
+        var that = this;
+        tweenObj.call(function () {
+                Entity.prototype.dispose.call(this, stage);
+                createjs.Tween.removeTweens(this.bitmap);
+                //Da se mahat kartinkite
+                //that.wave.enemyFinished(that);
+            }
+        );
     }
-
-    function bitmap(stage, tower) {
-        var bitmap = new createjs.Bitmap("assets/projectile.png");
-        bitmap.x = tower.x;
-        bitmap.y = tower.y;
-        stage.addChild(bitmap);
-        return bitmap;
-    }
-
-    var tweenObj = createjs.Tween.get(bitmap(game.stage, this));
-
-    var target = this.target;
-    tweenObj.to({x: target.x, y: target.y}, 1000, createjs.Ease.linear()).call(onHit);
-    this.tween.push(tweenObj);
-
-    var that = this;
-    tweenObj.call(function () {
-        //Da se mahat kartinkite
-        //that.wave.enemyFinished(that);
-    }
-    )
-}
+};
    // console.log(this.target);
 
 /*

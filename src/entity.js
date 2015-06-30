@@ -10,11 +10,11 @@ Entity.prototype.init = function (stage) {
     this.bitmap.x = this.params.x;
     this.bitmap.y = this.params.y;
     stage.addChild(this.bitmap);
-}
+};
 
 Entity.prototype.dispose = function (stage) {
     stage.removeChild(this.bitmap);
-}
+};
 
 Entity.prototype.getTile = function (grid, xSearch, ySearch) {
 
@@ -46,7 +46,7 @@ Entity.prototype.getTile = function (grid, xSearch, ySearch) {
             }
         }
     }
-}
+};
 
 Entity.prototype.getShortestPath = function (grid, startPoint, endPoint) {
     var graph = new Array(grid.horTilesCount);
@@ -65,7 +65,5 @@ Entity.prototype.getShortestPath = function (grid, startPoint, endPoint) {
     var graph2 = new Graph(graph);
     var start = graph2.grid[startTile.arrayX][startTile.arrayY];
     var end = graph2.grid[endTile.arrayX][endTile.arrayY];
-    var result = astar.search(graph2, start, end);
-
-    return result;
-}
+    return astar.search(graph2, start, end);
+};

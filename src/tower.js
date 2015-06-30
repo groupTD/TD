@@ -21,7 +21,7 @@ Tower.prototype.initTower = function (stage){
     //this.id = Tower.prototype.idGen++;
     //this.cooldown = 4;
     this.kills = 0;
-    this.damage = 5;
+    this.damage = 10;
     this.range = 200;
     this.projSpeed = 100;
 
@@ -33,20 +33,30 @@ Tower.prototype.dispose = function (stage) {
 };
 
 Tower.prototype.update = function(game) {
+//<<<<<<< HEAD
     //console.log("I will shoot yeah");
     if (game.currentWave) {
         getenemy: for (var i = 0; i < game.currentWave.enemies.length; i++) {
             var enemy = game.currentWave.enemies[i];
             //console.log(enemy.x - this.x);
             //console.log(Math.pow(enemy.x - this.x, 2));
+/*=======
+    if (game.currentWave) {
+        getenemy: for (var i = 0; i < game.currentWave.enemies.length; i++) {
+            var enemy = game.currentWave.enemies[i];
+>>>>>>> 37f68d8f71d4472691cca685da14d0bed08526ed*/
             if (Math.pow(enemy.x - this.x, 2) + Math.pow(enemy.y - this.y, 2) < Math.pow(this.range, 2)) {
                 this.target = enemy;
                 break getenemy;
             }
         }
     }
-    function onHit() {
-        //TODO
+    function onHit(tower, game) {
+        tower.target.health = tower.target.health - this.damage;
+        if (tower.target.health < 0) {
+            Wave.prototype.removeEnemy(tower.target);
+        }
+        game.gold += 100;
     }
 
     function bitmap(stage, tower) {
@@ -67,9 +77,10 @@ Tower.prototype.update = function(game) {
     tweenObj.call(function () {
         //Da se mahat kartinkite
         //that.wave.enemyFinished(that);
-    })
+    }
+    )
+}
    // console.log(this.target);
-};
 
 /*
 Tower.prototype.idGen = 0;

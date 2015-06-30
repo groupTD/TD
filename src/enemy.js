@@ -4,9 +4,7 @@ function Enemy(game, wave, params) {
     this.tween = [];
     this.newPath =false;
     this.wave = wave;
-    // TODO: not implemented
     this.health = params.health;
-    this.damage = params.damage;
 
 }
 

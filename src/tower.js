@@ -4,6 +4,7 @@
 function Tower(game, params){
     Entity.call(this, game, params);
     this.tween = [];
+    this.game = game;
 }
 //inherit(Tower, Entity);
 
@@ -41,12 +42,17 @@ Tower.prototype.update = function(game) {
         }
     }
     if (this.target) {
-        function onHit(tower, game) {
+
+        function onHit(tower) {
             tower.target.health = tower.target.health - tower.damage;
             if (tower.target.health < 0) {
-                tower.target = null;
+                var index = tower.game.currentWave.enemies.indexOf(tower.target);
+                if (index > -1) {
+                    tower.game.currentWave.enemies.splice(index, 1);
+                    tower.target.dispose(tower.game.stage);
+                    tower.game.gold += 100;
+                }
             }
-            game.gold += 100;
         }
 
         function bitmap(stage, tower) {
@@ -60,17 +66,17 @@ Tower.prototype.update = function(game) {
         var tweenObj = createjs.Tween.get(bitmap(game.stage, this));
 
         var target = this.target;
-        tweenObj.to({x: target.x, y: target.y}, this.projSpeed, createjs.Ease.linear()).call(onHit(this, game));
+        tweenObj.to({x: target.x, y: target.y}, this.projSpeed, createjs.Ease.linear()).call(onHit(this));
         this.tween.push(tweenObj);
 
-        var that = this;
+        /*var that = this;
         tweenObj.call(function () {
                 Entity.prototype.dispose.call(this, stage);
-                createjs.Tween.removeTweens(this.bitmap);
+                createjs.Tween.removeTweens(tweenObj.bitmap);
                 //Da se mahat kartinkite
                 //that.wave.enemyFinished(that);
             }
-        );
+        );*/
     }
 };
    // console.log(this.target);

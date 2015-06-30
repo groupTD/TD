@@ -58,6 +58,7 @@ Wave.prototype.removeEnemy = function (enemy) {
 };
 
 Wave.prototype.enemyFinished = function (enemy) {
+	this.game.lives--;
     this.removeEnemy(enemy);
 };
 

@@ -34,7 +34,7 @@ function Game(width, height, stage, gridSettingsContainer) {
     /// A flag to defer initialization of game state to enable calling logic to
     /// set event handlers on object creation in deserialization.
     this.initialized = false;
-
+/*
     this.hitSpriteSheet = new createjs.SpriteSheet({
         images: ["assets/explode.png"],
         frames: {width: 16, height: 16, regX: 8, regY: 8},
@@ -44,7 +44,7 @@ function Game(width, height, stage, gridSettingsContainer) {
     });
 
     this.hitSpriteTemplate = new createjs.Sprite(this.hitSpriteSheet);
-    this.effectContainer = new createjs.Container();
+    this.effectContainer = new createjs.Container();*/
 }
 
 Game.prototype.global_time = 0;
@@ -251,7 +251,7 @@ Game.prototype.getTile = function (grid, xSearch, ySearch) {
 
 };
 
-
+/*
 Game.prototype.addProjectile = function(pr) {
     this.projectiles.push(pr);
     this.addProjectileEvent(pr);
@@ -281,6 +281,6 @@ Game.prototype.addProjectileEvent = function(pr){
         });
         this.effectContainer.addChild(sprite);
     };
-};
+};*/
 
 

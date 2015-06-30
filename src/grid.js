@@ -88,7 +88,7 @@ Grid.prototype.draw = function (stage) {
     for (var n = 0; n < this.verTilesCount; n++) {
         for (var i = 0; i < this.horTilesCount; i++) {
             drawCircle(this.tiles[i][n]);
-            writeTileNumber(this.tiles[i][n]);
+            // writeTileNumber(this.tiles[i][n]);
             drawGridFrame(this.tiles[i][n],this);
         }
     }

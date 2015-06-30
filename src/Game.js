@@ -30,7 +30,7 @@ function Game(width, height, stage, gridSettingsContainer) {
 	this.levelStatusText = null;
     this.livesText = null;
     this.goldText = null;
-
+	
     /// A flag to defer initialization of game state to enable calling logic to
     /// set event handlers on object creation in deserialization.
     this.initialized = false;
@@ -61,7 +61,7 @@ Game.prototype.init = function (level) {
 
 Game.prototype.dispose = function () {
     this.currentWave.dispose();
-
+	this.paused = true;
 };
 
 Game.prototype.addTower = function (x, y) {
@@ -250,37 +250,5 @@ Game.prototype.getTile = function (grid, xSearch, ySearch) {
     }
 
 };
-
-/*
-Game.prototype.addProjectile = function(pr) {
-    this.projectiles.push(pr);
-    this.addProjectileEvent(pr);
-};
-
-Game.prototype.addProjectileEvent = function(pr){
-    var shape = new createjs.Container();
-    shape = new createjs.Shape();
-    shape.graphics.beginFill(pr.team == 0 ? "#ff0000" : "#ffff00").drawRect(-5, -2, 5, 2);
-    this.effectContainer.addChild(shape);
-
-
-    pr.onUpdate = function(dt) {
-        shape.x = this.x;
-        shape.y = this.y;
-        shape.rotation = this.angle * 360 / 2 / Math.PI;
-    };
-
-    pr.onDelete = function() {
-        var sprite = hitSpriteTemplate.clone();
-        sprite.x = this.x;
-        sprite.y = this.y;
-        sprite.gotoAndPlay("Explosion");
-        sprite.addEventListener("animationend", function(event){
-            event.target.stop();
-            this.effectContainer.removeChild(event.target);
-        });
-        this.effectContainer.addChild(sprite);
-    };
-};*/
 
 

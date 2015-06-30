@@ -139,10 +139,10 @@ function tick() {
             game.gold+=100;
         }
         if (i % 20 == 0){
-            console.log(game.towers);
+            //console.log(game.towers);
 
             for (var j = 0; j < game.towers.length; j++) {
-                console.log("Updating tower " + j);
+                // console.log("Updating tower " + j);
                 game.towers[j].update(game);
             }
         }

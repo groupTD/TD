@@ -14,7 +14,7 @@ Wave.prototype.addEnemy = function () {
     if (this.enemies.length < this.enemyCount && this.addedEnemies < this.enemyCount) {
 		var enemy = new Enemy(this.game, this, {
 			texturePath: "assets/enemy.png",
-			speed: 1000,
+			speed: 200,
 			x: 0,
 			y: (game.grid.verTilesCount * game.grid.verTilesLength) / 2 + 20,
 			health: 10 * this.difficulty
@@ -60,7 +60,34 @@ Wave.prototype.removeEnemy = function (enemy) {
 Wave.prototype.enemyFinished = function (enemy) {
 	this.game.lives--;
     this.removeEnemy(enemy);
+	if (this.game.lives == 0) {
+		this.game.dispose();
+		this.game.stage.removeAllChildren();
+		
+		this.initMenu();
+	}
 };
+
+Wave.prototype.initMenu = function() {
+	var startText = createText("New game");
+	startText.x = width / 2 - 50;
+	startText.y = height / 2;
+	var mainMenu = new createjs.Container();
+	var textObj = new createjs.Text("Game Over", "40px Arial", "#000000");
+	textObj.x = startText.x;
+	textObj.y = startText.y - 60;
+	
+	startText.addEventListener('click', function() {
+		stage.removeChild(mainMenu);
+		initGame();
+	});
+	
+	mainMenu.addChild(textObj);
+	mainMenu.addChild(startText);
+	stage.addChild(backImage);
+	stage.addChild(mainMenu);
+	stage.update();
+}
 
 Wave.prototype.dispose = function () {
 	for (var i = 0; i < this.enemies.length; i++) {
